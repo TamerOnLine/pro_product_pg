@@ -20,7 +20,8 @@ def create_app():
     db_path = os.path.join(basedir, 'instance', 'products.db')
     os.makedirs(os.path.join(basedir, 'instance'), exist_ok=True)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + db_path
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:12345@localhost:5432/products_db'
+
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)

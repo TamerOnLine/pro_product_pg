@@ -2,4 +2,5 @@ Flask
 Flask-SQLAlchemy
 python-dotenv
 Werkzeug
+psycopg2-binary
 

@@ -28,4 +28,4 @@ Thumbs.db
 
 # تجاهل ملفات التكوين الخاصة بـ IDEs
 generate_flask_structure.py
-pro_flask.code-workspace
+*.code-workspace
