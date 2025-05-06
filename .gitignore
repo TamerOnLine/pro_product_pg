@@ -1,0 +1,31 @@
+# تجاهل الملفات الخاصة بـ Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+
+# تجاهل ملفات البيئة الافتراضية
+venv/
+env/
+.virtualenv/
+
+# تجاهل ملف البيئة (.env)
+.env
+
+# تجاهل قواعد البيانات المحلية
+instance/*.db
+
+# تجاهل ملفات الصور المحملة محليًا
+
+
+# تجاهل ملفات السجلات
+*.log
+
+# تجاهل الملفات الخاصة بأنظمة التشغيل
+.DS_Store
+Thumbs.db
+
+# تجاهل ملفات التكوين الخاصة بـ IDEs
+generate_flask_structure.py
+pro_flask.code-workspace

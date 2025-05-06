@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>إدارة المنتجات</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        img {
+            width: 80px;
+            height: auto;
+            border-radius: 5px;
+        }
+        .btn {
+            padding: 6px 10px;
+            text-decoration: none;
+            color: white;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .edit-btn {
+            background-color: #ffc107;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+        }
+        .add-btn {
+            background-color: #28a745;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>📋 إدارة المنتجات</h1>
+
+    <a href="{{ url_for('main.admin_add_product') }}" class="btn add-btn">➕ إضافة منتج</a>
+    <a href="{{ url_for('main.admin_dashboard') }}" class="btn btn-secondary">
+        🏠 العودة إلى لوحة التحكم
+    </a>
+    <form method="POST" action="{{ url_for('main.reset_db') }}" onsubmit="return confirm('⚠️ هل أنت متأكد أنك تريد حذف قاعدة البيانات بالكامل؟');">
+        <button type="submit" class="btn delete-btn">🗑️ إعادة تعيين قاعدة البيانات</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                
+                <th>الصورة</th>
+                <th>رمز المنتج</th>
+                <th>الاسم</th>
+                <th>السعر</th>
+                <th>إجراءات</th>
+                
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td><img src="{{ url_for('static', filename='uploads/' + product.image) }}"></td>
+                <td>{{ product.product_code }}</td>
+
+                <td>{{ product.name }}</td>
+                <td>{{ product.price }} $</td>
+                <td>
+                    <a href="{{ url_for('main.edit_product', product_id=product.id) }}" class="btn edit-btn">تعديل</a>
+                    <form method="POST" action="{{ url_for('main.delete_product', product_id=product.id) }}" style="display:inline;" onsubmit="return confirm('هل أنت متأكد من الحذف؟');">
+                        <button type="submit" class="btn delete-btn">حذف</button>
+                    </form>
+
+                    
+                    
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

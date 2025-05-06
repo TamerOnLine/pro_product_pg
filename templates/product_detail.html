@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.name }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=4">
+</head>
+<body>
+
+    <div class="product-container">
+        <img class="product-image" src="{{ url_for('static', filename='uploads/' + product.image) }}" alt="{{ product.name }}">
+
+        <h2 class="product-title">{{ product.name }}</h2>
+
+        <div class="product-info-grid">
+            <div><strong>السعر:</strong></div>
+            <div>{{ product.price }} $</div>
+        
+            <div><strong>الوصف:</strong></div>
+            <div>{{ product.description }}</div>
+        
+            <div><strong>المواصفات:</strong></div>
+            <div>{{ product.specs }}</div>
+        </div>
+        
+
+        <a class="back-link" href="{{ url_for('main.index') }}">🔙 العودة</a>
+    </div>
+
+</body>
+</html>

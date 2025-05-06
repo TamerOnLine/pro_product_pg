@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>تسجيل دخول المشرف</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>🔐 تسجيل دخول المشرف</h2>
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% endif %}
+        <form method="POST">
+            <label for="username">اسم المستخدم:</label>
+            <input type="text" name="username" required>
+
+            <label for="password">كلمة المرور:</label>
+            <input type="password" name="password" required>
+
+            <button type="submit">دخول</button>
+        </form>
+    </div>
+</body>
+</html>
