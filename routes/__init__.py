@@ -54,7 +54,18 @@ def admin_add_product():
         if file and file.filename != '' and allowed_file(file.filename):
             # ✅ رفع الصورة إلى Cloudinary
             upload_result = cloudinary.uploader.upload(file)
-            image_url = upload_result['secure_url']  # 🔗 رابط الصورة النهائي
+            public_id = upload_result['public_id']
+
+            from cloudinary.utils import cloudinary_url
+            image_url, options = cloudinary_url(
+                public_id,
+                quality="auto",         # 🔄 ضغط تلقائي
+                fetch_format="auto",    # 🌐 تحويل WebP/JPEG حسب المتصفح
+                crop="limit",
+                width=800,
+                height=800
+            )
+
 
         try:
             product = Product(
@@ -104,8 +115,20 @@ def edit_product(product_id):
         if file and file.filename != '' and allowed_file(file.filename):
             # ✅ رفع الصورة الجديدة إلى Cloudinary
             upload_result = cloudinary.uploader.upload(file)
-            image_url = upload_result['secure_url']
-            product.image = image_url  # 🔁 استبدال الصورة القديمة
+
+
+            from cloudinary.utils import cloudinary_url
+            public_id = upload_result['public_id']
+            image_url, options = cloudinary_url(
+                public_id,
+                quality="auto",
+                fetch_format="auto",
+                crop="limit",
+                width=800,
+                height=800
+            )
+            product.image = image_url  # ✅ نُخزن الرابط مباشرة
+
 
         db.session.commit()
         return redirect(url_for('main.admin_products'))

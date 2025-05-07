@@ -28,7 +28,8 @@
 
         {% if product.image %}
             <p>الصورة الحالية:</p>
-            <img src="{{ product.image }}" style="width: 100px; border-radius: 8px;">
+            <img src="{{ product.image }}" alt="{{ product.name }}" loading="lazy" decoding="async" style="max-width:100%; border-radius: 8px;">
+
         {% endif %}
 
         <label>صورة جديدة (اختياري):</label>
