@@ -63,8 +63,16 @@ body {
     font-size: 14px;
 }
 
-.product-card a:hover {
-    background-color: #0056b3;
+/* تصغير الإطار الأزرق حول الصورة */
+.product-card a {
+    display: block;
+    padding: 4px 8px;
+    font-size: 16px; /* ⬅ تكبير النص */
+    background-color: #007bff;
+    color: white;
+    border-radius: 6px;
+    text-align: center;
+    width: 100%;
 }
 
 .products-wrapper {
