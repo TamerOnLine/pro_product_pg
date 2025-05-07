@@ -86,7 +86,7 @@
                 <td>{{ product.product_code }}</td>
 
                 <td>{{ product.name }}</td>
-                <td>{{ product.price }} $</td>
+                <td>{{ product.price }} €</td>
                 <td>
                     <a href="{{ url_for('main.edit_product', product_id=product.id) }}" class="btn edit-btn">تعديل</a>
                     <form method="POST" action="{{ url_for('main.delete_product', product_id=product.id) }}" style="display:inline;" onsubmit="return confirm('هل أنت متأكد من الحذف؟');">
