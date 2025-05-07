@@ -1,40 +1,38 @@
+# app.py
 import os
 from flask import Flask
 from models.models import db
 from routes import main_routes
 from dotenv import load_dotenv
+
 load_dotenv()
 
 def create_app():
     app = Flask(__name__)
 
-    # تحميل مفتاح الجلسة من ملف .env
-    app.secret_key = os.getenv('cv_kay')  # تأكد أن الاسم في .env يطابقه
+    app.secret_key = os.getenv('cv_kay')
 
-    # ✅ إعدادات رفع الصور
-    #basedir = os.path.abspath(os.path.dirname(__file__))
-    app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')
-    app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024  # الحد الأقصى 2MB
+    # ✅ حفظ الصور في مجلد مؤقت مناسب لـ Render
+    app.config['UPLOAD_FOLDER'] = os.path.join('/tmp', 'uploads')
+    app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024  # 2MB
 
-    # إعداد قاعدة البيانات
-    #db_path = os.path.join(basedir, 'instance', 'products.db')
-    #os.makedirs(os.path.join(basedir, 'instance'), exist_ok=True)
+    # ✅ قاعدة البيانات: PostgreSQL من متغير البيئة
+    database_url = os.getenv('DATABASE_URL')
+    if database_url:
+        app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+    else:
+        raise RuntimeError("❌ لم يتم العثور على DATABASE_URL في .env أو إعدادات Render.")
 
-    #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:12345@localhost:5432/products_db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-
-    #app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
     db.init_app(app)
     app.register_blueprint(main_routes)
 
     return app
 
-
 app = create_app()
 
 if __name__ == '__main__':
-
     with app.app_context():
         db.create_all()
     app.run(debug=True, host='0.0.0.0', port=8030)

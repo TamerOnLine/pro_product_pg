@@ -42,33 +42,39 @@ def allowed_file(filename):
 @main_routes.route('/admin/add', methods=['GET', 'POST'])
 def admin_add_product():
     if request.method == 'POST':
-        file = request.files['image']
+        file = request.files.get('image')
         image_filename = None
 
-        if file and allowed_file(file.filename):
+        if file and file.filename != '' and allowed_file(file.filename):
             ext = file.filename.rsplit('.', 1)[1].lower()
             unique_name = f"{uuid.uuid4().hex}.{ext}"
 
+            # ✅ حفظ الصور في /tmp/uploads
             upload_folder = current_app.config['UPLOAD_FOLDER']
-            os.makedirs(upload_folder, exist_ok=True)  # ✅ إنشاء المجلد إذا لم يكن موجودًا
+            os.makedirs(upload_folder, exist_ok=True)
 
             filepath = os.path.join(upload_folder, unique_name)
             file.save(filepath)
             image_filename = unique_name
 
-        product = Product(
-            product_code=request.form['product_code'],
-            name=request.form['name'],
-            price=float(request.form['price']),
-            description=request.form.get('description'),
-            image=image_filename,
-            specs=request.form.get('specs')
-        )
-        db.session.add(product)
-        db.session.commit()
-        return redirect(url_for('main.admin_dashboard'))
-    
+        try:
+            product = Product(
+                product_code=request.form['product_code'],
+                name=request.form['name'],
+                price=float(request.form['price']),
+                description=request.form.get('description'),
+                image=image_filename,
+                specs=request.form.get('specs')
+            )
+            db.session.add(product)
+            db.session.commit()
+            return redirect(url_for('main.admin_dashboard'))
+        except Exception as e:
+            print(f"❌ خطأ أثناء إضافة المنتج: {e}")
+            return "حدث خطأ أثناء إضافة المنتج.", 500
+
     return render_template('admin/add_product.html')
+
 
 
 
