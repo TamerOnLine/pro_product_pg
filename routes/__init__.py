@@ -8,6 +8,11 @@ from routes.auth_utils import login_required
 from werkzeug.utils import secure_filename
 import uuid
 from flask import current_app
+from flask import send_from_directory
+
+from flask import send_from_directory
+
+
 
 
 
@@ -96,17 +101,22 @@ def edit_product(product_id):
     if request.method == 'POST':
         product.product_code = request.form['product_code']
         product.name = request.form['name']
-        product.price = request.form['price']
+        product.price = float(request.form['price'])
         product.description = request.form['description']
         product.specs = request.form['specs']
+
         file = request.files.get('image')
-        if file and allowed_file(file.filename):
+        if file and file.filename != '' and allowed_file(file.filename):
             ext = file.filename.rsplit('.', 1)[1].lower()
             unique_name = f"{uuid.uuid4().hex}.{ext}"
-            filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], unique_name)
+
+            upload_folder = current_app.config['UPLOAD_FOLDER']
+            os.makedirs(upload_folder, exist_ok=True)  # ✅ إنشاء المجلد إن لم يكن موجودًا
+
+            filepath = os.path.join(upload_folder, unique_name)
             file.save(filepath)
             product.image = unique_name
-        
+
         db.session.commit()
         return redirect(url_for('main.admin_products'))
 
@@ -116,9 +126,17 @@ def edit_product(product_id):
 @main_routes.route('/admin/delete/<int:product_id>', methods=['POST'])
 def delete_product(product_id):
     product = Product.query.get_or_404(product_id)
+
+    # ✅ حذف صورة المنتج من السيرفر (إن وجدت)
+    if product.image:
+        image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], product.image)
+        if os.path.exists(image_path):
+            os.remove(image_path)
+
     db.session.delete(product)
     db.session.commit()
     return redirect(url_for('main.admin_products'))
+
 
 @main_routes.route('/admin/reset_db', methods=['POST'])
 def reset_db():
@@ -131,6 +149,11 @@ def reset_db():
 def logout():
     session.clear()
     return redirect(url_for('main.login'))
+
+@main_routes.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename)
+
 
 @main_routes.route('/dev/reset')
 def dev_reset():

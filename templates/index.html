@@ -67,10 +67,11 @@
     <div class="products-wrapper">
         <div class="products">
             {% for product in products %}
-                <div class="product-card">
-                    <img src="{{ url_for('static', filename='uploads/' + product.image) }}" alt="{{ product.name }}">
-                    <a href="{{ url_for('main.product_detail', product_id=product.id) }}">عرض التفاصيل</a>
-                </div>
+            <div class="product-card">
+                <img src="{{ url_for('main.uploaded_file', filename=product.image) }}" alt="{{ product.name }}">
+                <a href="{{ url_for('main.product_detail', product_id=product.id) }}">عرض التفاصيل</a>
+            </div>
+            
             {% endfor %}
         </div>
     </div>

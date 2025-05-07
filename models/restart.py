@@ -1,5 +1,8 @@
-@main_routes.route('/dev/reset')
-def dev_reset():
+# restart.py
+from myapp import app
+from models.models import db
+
+with app.app_context():
     db.drop_all()
     db.create_all()
-    return "✅ قاعدة البيانات أُعيد تعيينها بدون الحاجة لتسجيل الدخول (للتطوير فقط)."
+    print("✅ قاعدة البيانات أُعيد إنشاؤها بنجاح.")
