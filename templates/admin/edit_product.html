@@ -26,6 +26,11 @@
         <label>الوصف:</label>
         <textarea name="description">{{ product.description }}</textarea>
 
+        {% if product.image %}
+            <p>الصورة الحالية:</p>
+            <img src="{{ url_for('main.uploaded_file', filename=product.image) }}" style="width: 100px; border-radius: 8px;">
+        {% endif %}
+
         <label>صورة جديدة (اختياري):</label>
         <input type="file" name="image" accept="image/*"><br><br>
 

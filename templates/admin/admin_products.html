@@ -81,7 +81,8 @@
         <tbody>
             {% for product in products %}
             <tr>
-                <td><img src="{{ url_for('static', filename='uploads/' + product.image) }}"></td>
+                <td><img src="{{ url_for('main.uploaded_file', filename=product.image) }}">
+                </td>
                 <td>{{ product.product_code }}</td>
 
                 <td>{{ product.name }}</td>
