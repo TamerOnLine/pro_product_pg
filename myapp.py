@@ -12,18 +12,19 @@ def create_app():
     app.secret_key = os.getenv('cv_kay')  # تأكد أن الاسم في .env يطابقه
 
     # ✅ إعدادات رفع الصور
-    basedir = os.path.abspath(os.path.dirname(__file__))
-    app.config['UPLOAD_FOLDER'] = os.path.join(basedir, 'static', 'uploads')
+    #basedir = os.path.abspath(os.path.dirname(__file__))
+    app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')
     app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024  # الحد الأقصى 2MB
 
     # إعداد قاعدة البيانات
-    db_path = os.path.join(basedir, 'instance', 'products.db')
-    os.makedirs(os.path.join(basedir, 'instance'), exist_ok=True)
+    #db_path = os.path.join(basedir, 'instance', 'products.db')
+    #os.makedirs(os.path.join(basedir, 'instance'), exist_ok=True)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:12345@localhost:5432/products_db'
+    #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:12345@localhost:5432/products_db'
 
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+    #app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
     db.init_app(app)
     app.register_blueprint(main_routes)
 
