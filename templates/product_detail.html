@@ -10,7 +10,7 @@
 <body>
 
     <div class="product-container">
-        <img class="product-image" src="{{ url_for('main.uploaded_file', filename=product.image) }}" alt="{{ product.name }}">
+        <img class="product-image" src="{{ product.image }}" alt="{{ product.name }}">
     
         <h2 class="product-title">{{ product.name }}</h2>
     

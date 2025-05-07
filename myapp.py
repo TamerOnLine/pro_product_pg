@@ -4,6 +4,9 @@ from flask import Flask
 from models.models import db
 from routes import main_routes
 from dotenv import load_dotenv
+import cloudinary
+import cloudinary.uploader
+
 
 load_dotenv()
 
@@ -11,6 +14,14 @@ def create_app():
     app = Flask(__name__)
 
     app.secret_key = os.getenv('cv_kay')
+
+    # ✅ إعداد Cloudinary
+    cloudinary.config(
+        cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+        api_key=os.getenv("CLOUDINARY_API_KEY"),
+        api_secret=os.getenv("CLOUDINARY_API_SECRET")
+    )
+
 
     # ✅ حفظ الصور في مجلد مؤقت مناسب لـ Render
     app.config['UPLOAD_FOLDER'] = os.path.join('/tmp', 'uploads')

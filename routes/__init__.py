@@ -12,6 +12,7 @@ from flask import send_from_directory
 
 from flask import send_from_directory
 
+import cloudinary.uploader
 
 
 
@@ -48,19 +49,12 @@ def allowed_file(filename):
 def admin_add_product():
     if request.method == 'POST':
         file = request.files.get('image')
-        image_filename = None
+        image_url = None
 
         if file and file.filename != '' and allowed_file(file.filename):
-            ext = file.filename.rsplit('.', 1)[1].lower()
-            unique_name = f"{uuid.uuid4().hex}.{ext}"
-
-            # ✅ حفظ الصور في /tmp/uploads
-            upload_folder = current_app.config['UPLOAD_FOLDER']
-            os.makedirs(upload_folder, exist_ok=True)
-
-            filepath = os.path.join(upload_folder, unique_name)
-            file.save(filepath)
-            image_filename = unique_name
+            # ✅ رفع الصورة إلى Cloudinary
+            upload_result = cloudinary.uploader.upload(file)
+            image_url = upload_result['secure_url']  # 🔗 رابط الصورة النهائي
 
         try:
             product = Product(
@@ -68,7 +62,7 @@ def admin_add_product():
                 name=request.form['name'],
                 price=float(request.form['price']),
                 description=request.form.get('description'),
-                image=image_filename,
+                image=image_url,  # ✅ نُخزن الرابط مباشرة
                 specs=request.form.get('specs')
             )
             db.session.add(product)
@@ -79,6 +73,7 @@ def admin_add_product():
             return "حدث خطأ أثناء إضافة المنتج.", 500
 
     return render_template('admin/add_product.html')
+
 
 
 
@@ -102,20 +97,15 @@ def edit_product(product_id):
         product.product_code = request.form['product_code']
         product.name = request.form['name']
         product.price = float(request.form['price'])
-        product.description = request.form['description']
-        product.specs = request.form['specs']
+        product.description = request.form.get('description')
+        product.specs = request.form.get('specs')
 
         file = request.files.get('image')
         if file and file.filename != '' and allowed_file(file.filename):
-            ext = file.filename.rsplit('.', 1)[1].lower()
-            unique_name = f"{uuid.uuid4().hex}.{ext}"
-
-            upload_folder = current_app.config['UPLOAD_FOLDER']
-            os.makedirs(upload_folder, exist_ok=True)  # ✅ إنشاء المجلد إن لم يكن موجودًا
-
-            filepath = os.path.join(upload_folder, unique_name)
-            file.save(filepath)
-            product.image = unique_name
+            # ✅ رفع الصورة الجديدة إلى Cloudinary
+            upload_result = cloudinary.uploader.upload(file)
+            image_url = upload_result['secure_url']
+            product.image = image_url  # 🔁 استبدال الصورة القديمة
 
         db.session.commit()
         return redirect(url_for('main.admin_products'))

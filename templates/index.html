@@ -69,7 +69,7 @@
             {% for product in products %}
             <div class="product-card">
                 <a href="{{ url_for('main.product_detail', product_id=product.id) }}">
-                    <img src="{{ url_for('main.uploaded_file', filename=product.image) }}" alt="{{ product.name }}">
+                    <img src="{{ product.image }}" alt="{{ product.name }}">
                 </a>
                 <a href="{{ url_for('main.product_detail', product_id=product.id) }}">عرض التفاصيل</a>
                 
