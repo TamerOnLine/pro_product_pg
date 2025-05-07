@@ -48,7 +48,11 @@ def admin_add_product():
         if file and allowed_file(file.filename):
             ext = file.filename.rsplit('.', 1)[1].lower()
             unique_name = f"{uuid.uuid4().hex}.{ext}"
-            filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], unique_name)
+
+            upload_folder = current_app.config['UPLOAD_FOLDER']
+            os.makedirs(upload_folder, exist_ok=True)  # ✅ إنشاء المجلد إذا لم يكن موجودًا
+
+            filepath = os.path.join(upload_folder, unique_name)
             file.save(filepath)
             image_filename = unique_name
 
@@ -65,6 +69,7 @@ def admin_add_product():
         return redirect(url_for('main.admin_dashboard'))
     
     return render_template('admin/add_product.html')
+
 
 
 
