@@ -71,7 +71,7 @@
                 <a href="{{ url_for('main.product_detail', product_id=product.id) }}">
                     <img src="{{ product.image }}" alt="{{ product.name }}">
                 </a>
-                <a href="{{ url_for('main.product_detail', product_id=product.id) }}">عرض التفاصيل</a>
+                <a href="{{ url_for('main.product_detail', product_id=product.id) }}">{{ product.name }} </a>
                 
             </div>
             
