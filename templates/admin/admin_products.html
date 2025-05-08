@@ -62,7 +62,7 @@
     <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-secondary">
         🏠 العودة إلى لوحة التحكم
     </a>
-    <form method="POST" action="{{ url_for('admin.reset_db') }}" onsubmit="return confirm('⚠️ هل أنت متأكد أنك تريد حذف قاعدة البيانات بالكامل؟');">
+    <form method="POST" action="{{ url_for('reset.reset_db') }}" onsubmit="return confirm('⚠️ هل أنت متأكد أنك تريد حذف قاعدة البيانات بالكامل؟');">
         <button type="submit" class="btn delete-btn">🗑️ إعادة تعيين قاعدة البيانات</button>
     </form>
     <table>
