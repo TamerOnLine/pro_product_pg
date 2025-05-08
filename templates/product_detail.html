@@ -20,7 +20,7 @@
             <div style="font-size: 24px; font-weight: bold; color: #000;">{{ product.price }} €</div>
     
             <div><strong>الوصف:</strong></div>
-            <div style="font-size: 24px; font-weight: bold; color: #000;">{{ product.description }}</div>
+            <div style="font-size: 24px; font-weight: bold; color: #000;">{{ product.description | safe }}</div>
     
             <div><strong>المواصفات:</strong></div>
             <div style="font-size: 24px; font-weight: bold; color: #000;">{{ product.specs }}</div>
