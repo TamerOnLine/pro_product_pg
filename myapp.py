@@ -2,7 +2,7 @@
 import os
 from flask import Flask
 from models.models import db
-from routes import main_routes
+from routes import register_routes
 from dotenv import load_dotenv
 import cloudinary
 import cloudinary.uploader
@@ -37,7 +37,7 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)
-    app.register_blueprint(main_routes)
+    register_routes(app)
 
     return app
 
