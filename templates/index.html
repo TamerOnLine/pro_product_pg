@@ -68,11 +68,11 @@
         <div class="products">
             {% for product in products %}
             <div class="product-card">
-                <a href="{{ url_for('main.product_detail', product_id=product.id) }}">
+                <a href="{{ url_for('products.product_detail', product_id=product.id) }}">
                     <img src="{{ product.image }}" alt="{{ product.name }}" loading="lazy" decoding="async" style="max-width:100%;">
 
                 </a>
-                <a href="{{ url_for('main.product_detail', product_id=product.id) }}">{{ product.name }} </a>
+                <a href="{{ url_for('products.product_detail', product_id=product.id) }}">{{ product.name }} </a>
                 
             </div>
             
