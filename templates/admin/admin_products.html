@@ -58,11 +58,11 @@
 <body>
     <h1>📋 إدارة المنتجات</h1>
 
-    <a href="{{ url_for('main.admin_add_product') }}" class="btn add-btn">➕ إضافة منتج</a>
-    <a href="{{ url_for('main.admin_dashboard') }}" class="btn btn-secondary">
+    <a href="{{ url_for('admin.admin_add_product') }}" class="btn add-btn">➕ إضافة منتج</a>
+    <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-secondary">
         🏠 العودة إلى لوحة التحكم
     </a>
-    <form method="POST" action="{{ url_for('main.reset_db') }}" onsubmit="return confirm('⚠️ هل أنت متأكد أنك تريد حذف قاعدة البيانات بالكامل؟');">
+    <form method="POST" action="{{ url_for('admin.reset_db') }}" onsubmit="return confirm('⚠️ هل أنت متأكد أنك تريد حذف قاعدة البيانات بالكامل؟');">
         <button type="submit" class="btn delete-btn">🗑️ إعادة تعيين قاعدة البيانات</button>
     </form>
     <table>
@@ -89,8 +89,8 @@
                 <td>{{ product.name }}</td>
                 <td>{{ product.price }} €</td>
                 <td>
-                    <a href="{{ url_for('main.edit_product', product_id=product.id) }}" class="btn edit-btn">تعديل</a>
-                    <form method="POST" action="{{ url_for('main.delete_product', product_id=product.id) }}" style="display:inline;" onsubmit="return confirm('هل أنت متأكد من الحذف؟');">
+                    <a href="{{ url_for('admin.edit_product', product_id=product.id) }}" class="btn edit-btn">تعديل</a>
+                    <form method="POST" action="{{ url_for('admin.delete_product', product_id=product.id) }}" style="display:inline;" onsubmit="return confirm('هل أنت متأكد من الحذف؟');">
                         <button type="submit" class="btn delete-btn">حذف</button>
                     </form>
 
