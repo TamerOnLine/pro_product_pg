@@ -5,6 +5,8 @@ from werkzeug.utils import secure_filename
 from routes.auth_utils import login_required
 import cloudinary.uploader
 from cloudinary.utils import cloudinary_url
+from routes.auth_utils import login_required, admin_only
+
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -14,17 +16,20 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @admin_bp.route('/')
+@admin_only
 @login_required
 def admin_dashboard():
     return render_template('admin/dashboard.html')
 
 @admin_bp.route('/products')
+@admin_only
 @login_required
 def admin_products():
     products = Product.query.all()
     return render_template('admin/admin_products.html', products=products)
 
 @admin_bp.route('/add', methods=['GET', 'POST'])
+@admin_only
 @login_required
 def admin_add_product():
     if request.method == 'POST':
@@ -56,6 +61,7 @@ def admin_add_product():
 
 
 @admin_bp.route('/edit/<int:product_id>', methods=['GET', 'POST'])
+@admin_only
 @login_required
 def edit_product(product_id):
     product = Product.query.get_or_404(product_id)
@@ -82,6 +88,7 @@ def edit_product(product_id):
 
 
 @admin_bp.route('/delete/<int:product_id>', methods=['POST'])
+@admin_only
 @login_required
 def delete_product(product_id):
     product = Product.query.get_or_404(product_id)

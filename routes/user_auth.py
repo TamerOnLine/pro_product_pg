@@ -38,11 +38,24 @@ def login():
             session['user_id'] = user.id
             session['username'] = user.username
             session['role'] = user.role
-            return redirect('/')
+
+            # إعادة التوجيه حسب الدور
+            if user.role == 'admin':
+                return redirect(url_for('admin.admin_dashboard'))
+            else:
+                return redirect(url_for('user_auth.dashboard'))
 
         return "❌ بيانات الدخول غير صحيحة."
 
     return render_template('auth/login.html')
+
+
+@user_auth_bp.route('/dashboard')
+def dashboard():
+    if 'user_id' not in session:
+        return redirect(url_for('user_auth.login'))
+    return render_template('auth/dashboard.html', username=session['username'])
+
 
 
 @user_auth_bp.route('/logout')
