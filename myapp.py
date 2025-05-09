@@ -98,29 +98,39 @@ def forbidden(e):
 
 def create_super_admin_if_needed():
     """
-    Create a super admin account if it does not already exist.
+    Create a super admin user if none exists.
 
-    This function prompts the user to input details for a new admin account,
-    including username, email, and password. If an admin account already exists,
-    it notifies the user and skips creation.
-
-    Notes:
-        The password input is hidden from the terminal for security.
+    Checks if an admin user already exists. If not, prompts the user
+    to input credentials and creates a new admin user.
     """
+    from models.models_definitions import User
+
+    # Check if an admin already exists
     if User.query.filter_by(role='admin').first():
-        print("An admin account already exists.")
+        print("An owner account already exists. No need to create one.")
         return
 
-    print("Creating a super admin account...")
+    # Prompt for input only if admin does not exist
+    print("Creating a Super Admin account")
     username = input("Enter username: ").strip()
     email = input("Enter email: ").strip()
-    password = getpass.getpass("Enter password (input will be hidden): ").strip()
+
+    existing_user = User.query.filter(
+        (User.username == username) | (User.email == email)
+    ).first()
+
+    if existing_user:
+        print("This username or email is already in use.")
+        return
+
+    password = getpass.getpass("Enter password (input hidden): ").strip()
 
     admin = User(username=username, email=email, role='admin')
     admin.set_password(password)
     db.session.add(admin)
     db.session.commit()
-    print("Super admin account created successfully.")
+    print("Super Admin account has been created successfully.")
+
 
 
 if __name__ == '__main__':
