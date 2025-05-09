@@ -71,6 +71,15 @@
         <div class="text-center">
             <button type="submit" class="btn btn-warning">تحديث المنتج</button>
         </div>
+        <!-- داخل <form> وقبل إغلاقه مباشرة -->
+        {% if product.updated_at %}
+            <p class="text-muted mt-3 text-end">آخر تعديل: {{ product.updated_at.strftime('%Y-%m-%d %H:%M') }}</p>
+        {% endif %}
+
+        <div class="text-center mt-3">
+            <a href="{{ url_for('admin.admin_products') }}" class="btn btn-secondary">← رجوع إلى قائمة المنتجات</a>
+        </div>
+
     </form>
 </div>
 

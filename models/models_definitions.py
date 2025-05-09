@@ -16,6 +16,7 @@ class Product(db.Model):
     image = db.Column(db.String(200))  
     specs = db.Column(db.Text)         
     product_code = db.Column(db.String(20), unique=True, nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     def __repr__(self):
         return f'<Product {self.name}>'
