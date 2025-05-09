@@ -1,10 +1,13 @@
 import os
+import getpass
+
 from flask import Flask, render_template, g
-from models.models_definitions import db
-from routes import register_routes
 from dotenv import load_dotenv
 import cloudinary
 import cloudinary.uploader
+
+from models.models_definitions import db, User
+from routes import register_routes
 
 
 load_dotenv()
@@ -95,24 +98,29 @@ def forbidden(e):
 
 def create_super_admin_if_needed():
     """
-    Create a super admin user if none exists.
-    """
-    from models.models_definitions import User
+    Create a super admin account if it does not already exist.
 
+    This function prompts the user to input details for a new admin account,
+    including username, email, and password. If an admin account already exists,
+    it notifies the user and skips creation.
+
+    Notes:
+        The password input is hidden from the terminal for security.
+    """
     if User.query.filter_by(role='admin').first():
-        print("Owner account already exists.")
+        print("An admin account already exists.")
         return
 
-    print("Creating Super Admin account")
+    print("Creating a super admin account...")
     username = input("Enter username: ").strip()
     email = input("Enter email: ").strip()
-    password = input("Enter password: ").strip()
+    password = getpass.getpass("Enter password (input will be hidden): ").strip()
 
     admin = User(username=username, email=email, role='admin')
     admin.set_password(password)
     db.session.add(admin)
     db.session.commit()
-    print("Super Admin account created successfully.")
+    print("Super admin account created successfully.")
 
 
 if __name__ == '__main__':
