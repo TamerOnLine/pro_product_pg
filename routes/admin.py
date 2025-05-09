@@ -52,7 +52,8 @@ def admin_add_product():
             print(f"❌ خطأ أثناء إضافة المنتج: {e}")
             return "حدث خطأ أثناء إضافة المنتج.", 500
 
-    return render_template('admin/add_product.html')
+    return render_template('admin/add_product.html', tinymce_api_key=current_app.config['TINYMCE_API_KEY'])
+
 
 @admin_bp.route('/edit/<int:product_id>', methods=['GET', 'POST'])
 @login_required
@@ -76,7 +77,9 @@ def edit_product(product_id):
         db.session.commit()
         return redirect(url_for('admin.admin_products'))
 
-    return render_template('admin/edit_product.html', product=product)
+    return render_template('admin/edit_product.html', product=product, tinymce_api_key=current_app.config['TINYMCE_API_KEY'])
+
+
 
 @admin_bp.route('/delete/<int:product_id>', methods=['POST'])
 @login_required
