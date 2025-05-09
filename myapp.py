@@ -1,7 +1,7 @@
 # app.py
 import os
 from flask import Flask
-from models.models import db
+from models.models_definitions import db
 from routes import register_routes
 from dotenv import load_dotenv
 import cloudinary

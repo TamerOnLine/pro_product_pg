@@ -1,6 +1,6 @@
 import os
 from myapp import create_app
-from models.models import db
+from models.models_definitions import db
 
 # مرّر رابط PostgreSQL هنا (من Render - Internal Database URL)
 DATABASE_URL = os.environ.get('DATABASE_URL')

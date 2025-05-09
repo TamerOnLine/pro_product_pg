@@ -1,5 +1,5 @@
 from flask import Blueprint
-from models.models import db
+from models.models_definitions import db
 
 reset_bp = Blueprint('reset', __name__)
 

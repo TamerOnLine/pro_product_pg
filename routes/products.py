@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from models.models import Product
+from models.models_definitions import Product
 
 products_bp = Blueprint('products', __name__)
 

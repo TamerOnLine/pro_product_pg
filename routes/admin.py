@@ -1,6 +1,6 @@
 import os
 from flask import Blueprint, render_template, request, redirect, url_for, current_app, session
-from models.models import Product, db
+from models.models_definitions import Product, db
 from werkzeug.utils import secure_filename
 from routes.auth_utils import login_required
 import cloudinary.uploader
