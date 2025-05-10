@@ -95,3 +95,10 @@ def delete_product(product_id):
     db.session.delete(product)
     db.session.commit()
     return redirect(url_for('admin.admin_products'))
+
+@admin_bp.route('/system-links')
+@admin_only
+@login_required
+def system_links():
+    return render_template('admin/system_links.html')
+
