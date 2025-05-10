@@ -16,7 +16,7 @@ class Product(db.Model):
     image = db.Column(db.String(200))  
     specs = db.Column(db.Text)         
     product_code = db.Column(db.String(20), unique=True, nullable=False)
-    merchant_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    merchant_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     is_approved = db.Column(db.Boolean, default=False)
 
 
