@@ -15,15 +15,16 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
   <div class="container">
 
-    <a class="navbar-brand text-primary" href="{% if session.get('role') == 'merchant' %}
-        {{ url_for('merchant.dashboard') }}
-      {% elif session.get('role') == 'admin' %}
-        {{ url_for('admin.admin_dashboard') }}
-      {% elif session.get('role') == 'customer' %}
-        {{ url_for('user_auth.dashboard') }}
-      {% else %}
-        {{ url_for('products.index') }}
-      {% endif %}">منتجي</a>
+    <a class="navbar-brand text-primary me-3" href="{{ url_for('products.index') }}">{{ site_brand }}</a>
+
+    {% if session.get('role') == 'merchant' %}
+      <a class="navbar-brand text-primary" href="{{ url_for('merchant.dashboard') }}">🛠️ لوحة التحكم</a>
+    {% elif session.get('role') == 'customer' %}
+      <a class="navbar-brand text-primary" href="{{ url_for('user_auth.dashboard') }}">🛠️ لوحة التحكم</a>
+    {% elif session.get('role') == 'admin' %}
+      <a class="navbar-brand" href="{{ url_for('admin.admin_dashboard') }}">🛠️ لوحة التحكم</a>
+    {% endif %}
+
 
     <div class="d-flex">
       {% if session.get('username') %}
@@ -44,7 +45,6 @@
 <footer class="text-center mt-5 mb-3 text-muted">
   &copy; {{ current_year }} - جميع الحقوق محفوظة
 </footer>
-
 
 </body>
 </html>

@@ -101,6 +101,13 @@ from datetime import datetime
 def inject_current_year():
     return {'current_year': datetime.utcnow().year}
 
+@app.context_processor
+def inject_globals():
+    return {
+        'site_brand': 'منتجي'  # ✅ يمكن تغييره إلى أي اسم لاحقًا
+    }
+
+
 
 def create_super_admin_if_needed():
     """

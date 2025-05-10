@@ -15,7 +15,8 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{{ url_for('admin.admin_dashboard') }}">إدارة الموقع</a>
+    <a class="navbar-brand me-3" href="{{ url_for('products.index') }}">{{ site_brand }}</a>
+    <a class="navbar-brand" href="{{ url_for('admin.admin_dashboard') }}">لوحة التحكم</a>
     <div class="d-flex">
       {% if session['username'] %}
         <span class="text-white me-3">مرحبًا، {{ session['username'] }}</span>
@@ -32,7 +33,6 @@
 <footer class="text-center mt-5 mb-3 text-muted">
   &copy; {{ current_year }} - جميع الحقوق محفوظة
 </footer>
-
 
 </body>
 </html>
