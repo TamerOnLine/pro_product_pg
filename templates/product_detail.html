@@ -48,7 +48,11 @@
   <div class="col-md-10 col-lg-8">
     <div class="card shadow-sm border-0">
       {% if product.image %}
-        <img src="{{ product.image }}" class="card-img-top product-image" alt="{{ product.name }}">
+        <img
+          src="{{ product.image }}"
+          class="card-img-top product-image"
+          alt="{{ product.name }}"
+        >
       {% endif %}
       <div class="card-body text-center">
         <h3 class="product-title">{{ product.name }}</h3>
@@ -56,17 +60,17 @@
         <hr>
 
         {% if product.description %}
-        <div class="product-section text-start">
-          <h5>الوصف:</h5>
-          <p>{{ product.description|safe }}</p>
-        </div>
+          <div class="product-section text-start">
+            <h5>الوصف:</h5>
+            <p>{{ product.description|safe }}</p>
+          </div>
         {% endif %}
 
         {% if product.specs %}
-        <div class="product-section text-start">
-          <h5>المواصفات:</h5>
-          <p>{{ product.specs|safe }}</p>
-        </div>
+          <div class="product-section text-start">
+            <h5>المواصفات:</h5>
+            <p>{{ product.specs|safe }}</p>
+          </div>
         {% endif %}
       </div>
     </div>

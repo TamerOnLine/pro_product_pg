@@ -1,9 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
-from models.models_definitions import Product, db
+from models.models_definitions import Product, db, User
 from routes.auth_utils import login_required
 import cloudinary.uploader
 from cloudinary.utils import cloudinary_url
-from models.models_definitions import User
 
 merchant_bp = Blueprint('merchant', __name__, url_prefix='/merchant')
 
@@ -11,14 +10,31 @@ merchant_bp = Blueprint('merchant', __name__, url_prefix='/merchant')
 @merchant_bp.route('/dashboard')
 @login_required
 def dashboard():
+    """
+    Render the merchant dashboard if user role is 'merchant'.
+
+    Returns:
+        Rendered HTML template or unauthorized error page.
+    """
     if session.get('role') != 'merchant':
         return render_template("errors/unauthorized.html"), 403
-    return render_template('merchant/dashboard.html', username=session['username'])
+    return render_template('merchant/dashboard.html',
+                           username=session['username'])
 
 
 @merchant_bp.route('/add', methods=['GET', 'POST'])
 @login_required
 def add_product():
+    """
+    Allow a merchant to add a new product.
+
+    Methods:
+        GET: Display product addition form.
+        POST: Process form and add product to the database.
+
+    Returns:
+        Rendered HTML template or redirect to dashboard.
+    """
     if session.get('role') != 'merchant':
         return render_template("errors/unauthorized.html"), 403
 
@@ -29,7 +45,14 @@ def add_product():
         if file and file.filename:
             upload_result = cloudinary.uploader.upload(file)
             public_id = upload_result['public_id']
-            image_url, _ = cloudinary_url(public_id, quality="auto", fetch_format="auto", crop="limit", width=800, height=800)
+            image_url, _ = cloudinary_url(
+                public_id,
+                quality="auto",
+                fetch_format="auto",
+                crop="limit",
+                width=800,
+                height=800
+            )
 
         product = Product(
             product_code=request.form['product_code'],
@@ -51,6 +74,12 @@ def add_product():
 @merchant_bp.route('/products')
 @login_required
 def my_products():
+    """
+    Display the list of products added by the merchant.
+
+    Returns:
+        Rendered HTML template with list of merchant's products.
+    """
     if session.get('role') != 'merchant':
         return render_template("errors/unauthorized.html"), 403
 
@@ -61,6 +90,12 @@ def my_products():
 @merchant_bp.route('/profile')
 @login_required
 def profile():
+    """
+    Display the merchant's profile page.
+
+    Returns:
+        Rendered HTML template with user information.
+    """
     if session.get('role') != 'merchant':
         return render_template("errors/unauthorized.html"), 403
 
@@ -71,6 +106,16 @@ def profile():
 @merchant_bp.route('/profile/edit', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
+    """
+    Allow the merchant to edit their profile.
+
+    Methods:
+        GET: Display profile edit form.
+        POST: Save updated profile info to database.
+
+    Returns:
+        Rendered HTML template or redirect to profile page.
+    """
     if session.get('role') != 'merchant':
         return render_template("errors/unauthorized.html"), 403
 
@@ -80,7 +125,6 @@ def edit_profile():
         user.username = request.form['username'].strip()
         user.email = request.form['email'].strip()
         db.session.commit()
-        return redirect(url_for('merchant.profile'))  # ✅ يعود إلى صفحة بياناتي
+        return redirect(url_for('merchant.profile'))
 
     return render_template('merchant/edit_profile.html', user=user)
-

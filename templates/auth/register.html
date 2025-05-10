@@ -1,31 +1,48 @@
 {% extends "base.html" %}
 {% block title %}تسجيل حساب{% endblock %}
+
 {% block content %}
+  <h3 class="mb-4 text-center">تسجيل حساب جديد</h3>
 
-<h3 class="mb-4 text-center">تسجيل حساب جديد</h3>
-<form method="POST" class="w-50 mx-auto">
-  <div class="mb-3">
-    <label class="form-label">البريد الإلكتروني</label>
-    <input type="email" name="email" class="form-control" required>
-  </div>
-  <div class="mb-3">
-    <label class="form-label">اسم المستخدم</label>
-    <input type="text" name="username" class="form-control" required>
-  </div>
-  <div class="mb-3">
-    <label class="form-label">كلمة المرور</label>
-    <input type="password" name="password" class="form-control" required>
-  </div>
-  <div class="mb-3">
-    <label class="form-label">نوع الحساب</label>
-    <select name="role" class="form-select" required>
-      <option value="customer">عميل</option>
-      <option value="merchant">تاجر</option>
-    </select>
-  </div>
+  <form method="POST" class="w-50 mx-auto">
+    <div class="mb-3">
+      <label class="form-label">البريد الإلكتروني</label>
+      <input
+        type="email"
+        name="email"
+        class="form-control"
+        required
+      >
+    </div>
 
+    <div class="mb-3">
+      <label class="form-label">اسم المستخدم</label>
+      <input
+        type="text"
+        name="username"
+        class="form-control"
+        required
+      >
+    </div>
 
-  <button type="submit" class="btn btn-primary w-100">تسجيل</button>
-</form>
+    <div class="mb-3">
+      <label class="form-label">كلمة المرور</label>
+      <input
+        type="password"
+        name="password"
+        class="form-control"
+        required
+      >
+    </div>
 
+    <div class="mb-3">
+      <label class="form-label">نوع الحساب</label>
+      <select name="role" class="form-select" required>
+        <option value="customer">عميل</option>
+        <option value="merchant">تاجر</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">تسجيل</button>
+  </form>
 {% endblock %}

@@ -1,43 +1,67 @@
 """
 restart.py
 
-Script to manage database table creation for the Flask application. 
-It allows two options: dropping and recreating all tables, or creating missing tables only.
+Script to manage database table creation for the Flask application.
 
-Usage:
-- Option 1: Drop all tables and recreate them (data loss warning).
-- Option 2: Create tables only if they do not exist (safe).
+This script provides two options for interacting with the database:
+1. Drop all tables and recreate them (WARNING: This deletes all existing data).
+2. Create only the tables that do not already exist (Safe operation).
 
 Note:
-- This script must not be run in a production environment.
+    - This script must not be executed in a production environment.
+    - It must be run from the project root directory.
+
+Usage:
+    Run the script and follow the prompt to choose one of the two options.
 """
 
 import os
 import sys
 
+# Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from myapp import app
 from models.models_definitions import db
 
-if os.getenv("FLASK_ENV") == "production":
-    print("Execution of this script is not allowed in the production environment.")
-    sys.exit()
+def is_production_environment() -> bool:
+    """Check if the current environment is production.
 
-print("Warning: This script interacts with the database.")
-print("Please choose one of the following options:")
-print("1. Drop all tables and recreate them (This will erase all existing data!)")
-print("2. Create tables only if they do not already exist (Safe option)")
+    Returns:
+        bool: True if in production environment, False otherwise.
+    """
+    return os.getenv("FLASK_ENV") == "production"
 
-choice = input("Enter your choice (1 or 2): ").strip()
+def prompt_user_choice() -> str:
+    """Display options to the user and capture their choice.
 
-with app.app_context():
-    if choice == "1":
-        db.drop_all()
-        db.create_all()
-        print("All tables have been dropped and recreated successfully.")
-    elif choice == "2":
-        db.create_all()
-        print("Missing tables have been created successfully.")
-    else:
-        print("Invalid choice. No action was performed.")
+    Returns:
+        str: User's input choice.
+    """
+    print("Warning: This script interacts with the database.")
+    print("Please choose one of the following options:")
+    print("1. Drop all tables and recreate them (This will erase all existing data!)")
+    print("2. Create tables only if they do not already exist (Safe option)")
+    return input("Enter your choice (1 or 2): ").strip()
+
+def main():
+    """Main function to execute the database operations based on user input."""
+    if is_production_environment():
+        print("Execution of this script is not allowed in the production environment.")
+        sys.exit()
+
+    choice = prompt_user_choice()
+
+    with app.app_context():
+        if choice == "1":
+            db.drop_all()
+            db.create_all()
+            print("All tables have been dropped and recreated successfully.")
+        elif choice == "2":
+            db.create_all()
+            print("Missing tables have been created successfully.")
+        else:
+            print("Invalid choice. No action was performed.")
+
+if __name__ == "__main__":
+    main()

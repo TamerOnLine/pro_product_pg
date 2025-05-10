@@ -1,5 +1,6 @@
 import os
 import getpass
+from datetime import datetime
 
 from flask import Flask, render_template, g
 from dotenv import load_dotenv
@@ -95,18 +96,29 @@ def forbidden(e):
     """
     return render_template('errors/403.html'), 403
 
-from datetime import datetime
 
 @app.context_processor
 def inject_current_year():
+    """
+    Inject the current year into all templates.
+
+    Returns:
+        dict: Dictionary with the current year.
+    """
     return {'current_year': datetime.utcnow().year}
+
 
 @app.context_processor
 def inject_globals():
-    return {
-        'site_brand': 'منتجي'  # ✅ يمكن تغييره إلى أي اسم لاحقًا
-    }
+    """
+    Inject global variables into all templates.
 
+    Returns:
+        dict: Dictionary with site branding.
+    """
+    return {
+        'site_brand': 'منتجي'  # This can be changed to any name later.
+    }
 
 
 def create_super_admin_if_needed():
@@ -143,7 +155,6 @@ def create_super_admin_if_needed():
     db.session.add(admin)
     db.session.commit()
     print("Super Admin account has been created successfully.")
-
 
 
 if __name__ == '__main__':

@@ -1,31 +1,34 @@
-# تجاهل الملفات الخاصة بـ Python
+# Ignore Python cache files
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-*.sqlite3
 
-# تجاهل ملفات البيئة الافتراضية
+# Ignore SQLite database files
+*.sqlite3
+instance/*.db
+
+# Ignore test files and folders
+test/
+
+# Ignore virtual environment folders
 venv/
 env/
 .virtualenv/
 
-# تجاهل ملف البيئة (.env)
+# Ignore environment variable files
 .env
 
-# تجاهل قواعد البيانات المحلية
-instance/*.db
-test/
-# تجاهل ملفات الصور المحملة محليًا
-
-
-# تجاهل ملفات السجلات
+# Ignore log files
 *.log
 
-# تجاهل الملفات الخاصة بأنظمة التشغيل
+# Ignore operating system-specific files
 .DS_Store
 Thumbs.db
 
-# تجاهل ملفات التكوين الخاصة بـ IDEs
+# Ignore IDE and workspace configuration files
 generate_flask_structure.py
 *.code-workspace
+
+# Ignore locally uploaded images (if applicable)
+# Add specific patterns if known (e.g., /uploads/, *.jpg, *.png)
