@@ -102,3 +102,11 @@ def delete_product(product_id):
 def system_links():
     return render_template('admin/system_links.html')
 
+@admin_bp.route('/approve/<int:product_id>', methods=['POST'])
+@admin_only
+@login_required
+def approve_product(product_id):
+    product = Product.query.get_or_404(product_id)
+    product.is_approved = True
+    db.session.commit()
+    return redirect(url_for('admin.admin_products'))

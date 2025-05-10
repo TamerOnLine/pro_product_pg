@@ -5,8 +5,9 @@ products_bp = Blueprint('products', __name__)
 
 @products_bp.route('/')
 def index():
-    products = Product.query.all()
+    products = Product.query.filter_by(is_approved=True).all()
     return render_template('index.html', products=products)
+
 
 @products_bp.route('/product/<int:product_id>')
 def product_detail(product_id):

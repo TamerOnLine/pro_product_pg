@@ -16,6 +16,10 @@ class Product(db.Model):
     image = db.Column(db.String(200))  
     specs = db.Column(db.Text)         
     product_code = db.Column(db.String(20), unique=True, nullable=False)
+    merchant_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    is_approved = db.Column(db.Boolean, default=False)
+
+
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     def __repr__(self):
@@ -30,6 +34,8 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.Text, nullable=False)
     role = db.Column(db.String(20), default='user')  # user, admin, etc.
+    products = db.relationship('Product', backref='merchant', lazy=True)
+
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def set_password(self, password):
