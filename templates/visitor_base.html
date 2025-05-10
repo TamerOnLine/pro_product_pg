@@ -15,10 +15,6 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
   <div class="container">
 
-    <!-- شعار الموقع -->
-    <a class="navbar-brand text-white fw-bold bg-danger px-3 py-1 rounded" href="{{ url_for('products.index') }}">
-      منتجي
-    </a>
 
 
     {% if session.get('role') == 'merchant' %}
@@ -26,9 +22,8 @@
     {% elif session.get('role') == 'customer' %}
       <a class="navbar-brand text-primary" href="{{ url_for('user_auth.dashboard') }}">🛠️ لوحة التحكم</a>
     {% elif session.get('role') == 'admin' %}
-      <a class="navbar-brand" href="{{ url_for('admin.admin_dashboard') }}">🛠️ لوحة التحكم</a>
+      <a class="navbar-brand text-primary" href="{{ url_for('admin.admin_dashboard') }}">🛠️ لوحة التحكم</a>
     {% endif %}
-
 
     <div class="d-flex">
       {% if session.get('username') %}
