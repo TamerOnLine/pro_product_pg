@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}لوحة تحكم التاجر{% endblock %}
+
+{% block content %}
+<div class="text-center">
+  <h2 class="mb-4">📦 لوحة التاجر</h2>
+  <p class="lead">مرحبًا {{ username }} 👋</p>
+  <p>من هنا يمكنك إدارة منتجات متجرك.</p>
+
+  <div class="row justify-content-center mt-4">
+    <div class="col-md-4 mb-3">
+      <a href="#" class="btn btn-outline-primary w-100 py-3">
+        🧾 منتجاتي (لاحقًا)
+      </a>
+    </div>
+    <div class="col-md-4 mb-3">
+      <a href="#" class="btn btn-outline-success w-100 py-3">
+        ➕ إضافة منتج (لاحقًا)
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

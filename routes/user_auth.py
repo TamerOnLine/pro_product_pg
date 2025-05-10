@@ -42,8 +42,13 @@ def login():
             # إعادة التوجيه حسب الدور
             if user.role == 'admin':
                 return redirect(url_for('admin.admin_dashboard'))
-            else:
+            elif user.role == 'merchant':
+                return redirect(url_for('merchant.dashboard'))
+            elif user.role == 'customer':
                 return redirect(url_for('user_auth.dashboard'))
+            
+            else:
+                return redirect(url_for('products.index'))
 
         return "❌ بيانات الدخول غير صحيحة."
 
