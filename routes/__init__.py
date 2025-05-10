@@ -4,6 +4,7 @@ from routes.reset import reset_bp
 from routes.user_auth import user_auth_bp
 from routes.merchant import merchant_bp
 
+
 def register_routes(app):
     """
     Register all application routes using Flask Blueprints.
@@ -19,3 +20,4 @@ def register_routes(app):
     app.register_blueprint(reset_bp)
     app.register_blueprint(user_auth_bp)
     app.register_blueprint(merchant_bp)
+   

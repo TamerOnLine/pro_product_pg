@@ -96,3 +96,29 @@ def logout():
     """
     session.clear()
     return redirect(url_for('user_auth.login'))
+
+
+@user_auth_bp.route('/profile')
+def profile():
+    if 'user_id' not in session:
+        return redirect(url_for('user_auth.login'))
+
+    user = User.query.get(session['user_id'])
+    return render_template('auth/profile.html', user=user)
+
+
+@user_auth_bp.route('/edit', methods=['GET', 'POST'])
+def edit_profile():
+    if 'user_id' not in session:
+        return redirect(url_for('user_auth.login'))
+
+    user = User.query.get(session['user_id'])
+
+    if request.method == 'POST':
+        user.username = request.form.get('username')
+        user.email = request.form.get('email')
+        db.session.commit()
+        return redirect(url_for('user_auth.profile'))
+
+    return render_template('auth/edit_profile.html', user=user)
+

@@ -5,6 +5,10 @@
   <div class="text-center">
     <h2>مرحبًا {{ username }} 👋</h2>
     <p class="lead">أهلاً بك في لوحة المستخدم.</p>
-    <p>يمكنك تصفح المنتجات أو تعديل بياناتك (في المستقبل 😉).</p>
+    <div class="d-flex justify-content-center gap-3 mt-4">
+      <a href="{{ url_for('user_auth.profile') }}" class="btn btn-outline-info">👤 بياناتي</a>
+      <a href="{{ url_for('user_auth.edit_profile') }}" class="btn btn-outline-secondary">✏️ تعديل البيانات</a>
+    </div>
+
   </div>
 {% endblock %}
