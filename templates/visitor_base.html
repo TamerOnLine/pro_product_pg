@@ -14,7 +14,17 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
   <div class="container">
-    <a class="navbar-brand text-primary" href="{{ url_for('products.index') }}">منتجي</a>
+
+    <a class="navbar-brand text-primary" href="{% if session.get('role') == 'merchant' %}
+        {{ url_for('merchant.dashboard') }}
+      {% elif session.get('role') == 'admin' %}
+        {{ url_for('admin.admin_dashboard') }}
+      {% elif session.get('role') == 'customer' %}
+        {{ url_for('user_auth.dashboard') }}
+      {% else %}
+        {{ url_for('products.index') }}
+      {% endif %}">منتجي</a>
+
     <div class="d-flex">
       {% if session.get('username') %}
         <span class="text-primary me-3">مرحبًا، {{ session['username'] }}</span>
@@ -32,8 +42,9 @@
 </div>
 
 <footer class="text-center mt-5 mb-3 text-muted">
-  &copy; 2025 - جميع الحقوق محفوظة
+  &copy; {{ current_year }} - جميع الحقوق محفوظة
 </footer>
+
 
 </body>
 </html>

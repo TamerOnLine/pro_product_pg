@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}منتجاتي{% endblock %}
+{% block content %}
+
+<h2 class="text-center mb-4">📦 منتجاتي</h2>
+
+{% if products %}
+<div class="table-responsive">
+  <table class="table table-bordered table-hover align-middle bg-white">
+    <thead class="table-light text-center">
+      <tr>
+        <th>الصورة</th>
+        <th>الاسم</th>
+        <th>السعر</th>
+        <th>الحالة</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for product in products %}
+      <tr class="text-center">
+        <td>
+          <img src="{{ product.image }}" alt="{{ product.name }}" style="width: 80px; height: 80px; object-fit: cover;">
+        </td>
+        <td>{{ product.name }}</td>
+        <td>{{ product.price }} €</td>
+        <td>
+          {% if product.is_approved %}
+            <span class="badge bg-success">معتمد ✅</span>
+          {% else %}
+            <span class="badge bg-warning text-dark">بانتظار الموافقة ⏳</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+  <p class="text-center text-muted">لا توجد منتجات حاليًا.</p>
+{% endif %}
+
+{% endblock %}

@@ -95,6 +95,12 @@ def forbidden(e):
     """
     return render_template('errors/403.html'), 403
 
+from datetime import datetime
+
+@app.context_processor
+def inject_current_year():
+    return {'current_year': datetime.utcnow().year}
+
 
 def create_super_admin_if_needed():
     """

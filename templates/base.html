@@ -14,9 +14,18 @@
 
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
-      <a class="navbar-brand" href="/">منتجي</a>
+      <a class="navbar-brand" href="{% if session.get('role') == 'merchant' %}
+        {{ url_for('merchant.dashboard') }}
+      {% elif session.get('role') == 'admin' %}
+        {{ url_for('admin.admin_dashboard') }}
+      {% elif session.get('role') == 'customer' %}
+        {{ url_for('user_auth.dashboard') }}
+      {% else %}
+        {{ url_for('products.index') }}
+      {% endif %}">منتجي</a>
+
       <div class="d-flex">
-        {% if session['username'] %}
+        {% if session.get('username') %}
           <span class="text-white me-3">مرحبًا، {{ session['username'] }}</span>
           <a href="{{ url_for('user_auth.logout') }}" class="btn btn-outline-light btn-sm">خروج</a>
         {% else %}
@@ -32,9 +41,10 @@
     {% endblock %}
   </div>
 
-  <footer class="text-center mt-5 mb-3 text-muted">
-    &copy; 2025 - مشروع تجريبي مع Flask
-  </footer>
+<footer class="text-center mt-5 mb-3 text-muted">
+  &copy; {{ current_year }} - جميع الحقوق محفوظة
+</footer>
+
 
 </body>
 </html>
