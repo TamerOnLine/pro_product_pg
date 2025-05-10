@@ -17,6 +17,14 @@
   <div class="container-fluid">
     <a class="navbar-brand me-3" href="{{ url_for('products.index') }}">منتجي</a>
 
+      {% if session.get('role') == 'merchant' %}
+        <a class="navbar-brand text-white" href="{{ url_for('merchant.dashboard') }}">🛠️ لوحة التحكم</a>
+      {% elif session.get('role') == 'customer' %}
+        <a class="navbar-brand text-white" href="{{ url_for('user_auth.dashboard') }}">🛠️ لوحة التحكم</a>
+      {% elif session.get('role') == 'admin' %}
+        <a class="navbar-brand text-white" href="{{ url_for('admin.admin_dashboard') }}">🛠️ لوحة التحكم</a>
+      {% endif %}
+
     <div class="d-flex">
       {% if session['username'] %}
         <span class="text-white me-3">مرحبًا، {{ session['username'] }}</span>
