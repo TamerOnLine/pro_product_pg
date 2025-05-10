@@ -15,6 +15,15 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
   <div class="container">
     <a class="navbar-brand text-primary" href="{{ url_for('products.index') }}">منتجي</a>
+    <div class="d-flex">
+      {% if session.get('username') %}
+        <span class="text-primary me-3">مرحبًا، {{ session['username'] }}</span>
+        <a href="{{ url_for('user_auth.logout') }}" class="btn btn-outline-primary btn-sm">خروج</a>
+      {% else %}
+        <a href="{{ url_for('user_auth.login') }}" class="btn btn-outline-primary btn-sm me-2">دخول</a>
+        <a href="{{ url_for('user_auth.register') }}" class="btn btn-primary btn-sm">تسجيل</a>
+      {% endif %}
+    </div>
   </div>
 </nav>
 
