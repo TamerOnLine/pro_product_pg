@@ -9,12 +9,13 @@ def register():
         email = request.form['email']
         username = request.form['username']
         password = request.form['password']
+        role = request.form.get('role', 'customer')  # القيمة الافتراضية "customer"
 
         existing_user = User.query.filter((User.email == email) | (User.username == username)).first()
         if existing_user:
             return "🚫 البريد الإلكتروني أو اسم المستخدم مستخدم بالفعل."
 
-        user = User(email=email, username=username)
+        user = User(email=email, username=username, role=role)
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
@@ -22,6 +23,7 @@ def register():
         return redirect(url_for('user_auth.login'))
 
     return render_template('auth/register.html')
+
 
 
 @user_auth_bp.route('/login', methods=['GET', 'POST'])
