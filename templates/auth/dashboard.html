@@ -1,14 +1,18 @@
 {% extends "base.html" %}
-{% block title %}لوحة المستخدم{% endblock %}
+{% block title %}لوحة العميل{% endblock %}
 
 {% block content %}
   <div class="text-center">
     <h2>مرحبًا {{ username }} 👋</h2>
-    <p class="lead">أهلاً بك في لوحة المستخدم.</p>
-    <div class="d-flex justify-content-center gap-3 mt-4">
-      <a href="{{ url_for('user_auth.profile') }}" class="btn btn-outline-info">👤 بياناتي</a>
-      <a href="{{ url_for('user_auth.edit_profile') }}" class="btn btn-outline-secondary">✏️ تعديل البيانات</a>
-    </div>
+    <p class="lead">أهلاً بك في لوحة العميل.</p>
 
+    <div class="col-md-4 mb-3">
+      <a
+        href="{{ url_for('user_auth.profile') }}"
+        class="btn btn-outline-secondary w-100 py-3"
+      >
+        👤 بياناتي
+      </a>
+    </div>
   </div>
 {% endblock %}
