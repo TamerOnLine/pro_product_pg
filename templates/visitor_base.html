@@ -17,6 +17,8 @@
 
     <a class="navbar-brand text-primary me-3" href="{{ url_for('products.index') }}">{{ site_brand }}</a>
 
+    <p style="color:red;">DEBUG: {{ site_brand }}</p>
+
     {% if session.get('role') == 'merchant' %}
       <a class="navbar-brand text-primary" href="{{ url_for('merchant.dashboard') }}">🛠️ لوحة التحكم</a>
     {% elif session.get('role') == 'customer' %}

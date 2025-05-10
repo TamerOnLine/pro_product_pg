@@ -16,6 +16,7 @@
     <div class="container-fluid">
       <a class="navbar-brand me-3" href="{{ url_for('products.index') }}">{{ site_brand }}</a>
     
+      <p style="color:red;">DEBUG: {{ site_brand }}</p>
 
 
       {% if session.get('role') == 'merchant' %}
