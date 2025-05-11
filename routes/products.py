@@ -1,6 +1,7 @@
-from flask import Blueprint, request, render_template, redirect, url_for, flash
+from flask import Blueprint, request, current_app, render_template, redirect, url_for, flash
 from models.models_definitions import db, Product
 import cloudinary.uploader
+
 
 
 
@@ -80,6 +81,5 @@ def add_product():
 
 
     except Exception as e:
-        print("❌ حدث خطأ أثناء إضافة المنتج:", e)
-        return "An error occurred while adding the product."
-
+        current_app.logger.exception("❌ حدث استثناء أثناء تنفيذ العملية")
+        return "حدث خطأ غير متوقع. الرجاء المحاولة لاحقًا.", 500

@@ -78,16 +78,18 @@ def admin_add_product():
                 price=float(request.form['price']),
                 description=request.form.get('description'),
                 image=image_url,
-                specs=request.form.get('specs')
+                specs=request.form.get('specs'),
+                merchant_id=session.get("user_id")
             )
             product.generate_code(sequence)
 
             db.session.add(product)
             db.session.commit()
             return redirect(url_for('admin.admin_dashboard'))
+
         except Exception as e:
-            print(f"Error while adding product: {e}")
-            return "An error occurred while adding the product.", 500
+            current_app.logger.exception("❌ حدث استثناء أثناء إضافة المنتج")
+            return "حدث خطأ غير متوقع. الرجاء المحاولة لاحقًا.", 500
 
     return render_template(
         'admin/add_product.html',

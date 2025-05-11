@@ -3,7 +3,7 @@ from models.models_definitions import Product, db, User
 from routes.auth_utils import login_required
 import cloudinary.uploader
 from cloudinary.utils import cloudinary_url
-
+import os
 merchant_bp = Blueprint('merchant', __name__, url_prefix='/merchant')
 
 
@@ -25,16 +25,6 @@ def dashboard():
 @merchant_bp.route('/add', methods=['GET', 'POST'])
 @login_required
 def add_product():
-    """
-    Allow a merchant to add a new product.
-
-    Methods:
-        GET: Display product addition form.
-        POST: Process form and add product to the database.
-
-    Returns:
-        Rendered HTML template or redirect to dashboard.
-    """
     if session.get('role') != 'merchant':
         return render_template("errors/unauthorized.html"), 403
 
@@ -55,7 +45,6 @@ def add_product():
             )
 
         product = Product(
-            product_code=request.form['product_code'],
             name=request.form['name'],
             price=float(request.form['price']),
             description=request.form.get('description'),
@@ -64,11 +53,20 @@ def add_product():
             merchant_id=session['user_id'],
             is_approved=False
         )
+
+        # ✅ توليد كود المنتج بناءً على التسلسل والتاجر
+        sequence = Product.query.filter_by(merchant_id=session['user_id']).count() + 1
+        product.generate_code(sequence)
+
         db.session.add(product)
         db.session.commit()
         return redirect(url_for('merchant.dashboard'))
 
-    return render_template('merchant/add_product.html')
+    return render_template(
+        'merchant/add_product.html',
+        tinymce_api_key=os.getenv('TINYMCE_API_KEY')
+    )
+
 
 
 @merchant_bp.route('/products')
