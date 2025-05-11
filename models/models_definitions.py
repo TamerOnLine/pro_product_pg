@@ -31,7 +31,7 @@ class Product(db.Model):
     description = db.Column(db.Text)
     image = db.Column(db.String(200))
     specs = db.Column(db.Text)
-    product_code = db.Column(db.String(20), unique=True, nullable=False)
+    product_code = db.Column(db.String(30), unique=True, nullable=False)
     merchant_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     is_approved = db.Column(db.Boolean, default=False)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -39,6 +39,11 @@ class Product(db.Model):
     def __repr__(self):
         """Return a string representation of the product."""
         return f'<Product {self.name}>'
+    
+    def generate_code(self, sequence):
+        if self.merchant_id:
+            self.product_code = f"USR{self.merchant_id:06d}-PRO{sequence:03d}"
+
 
 
 class User(db.Model):

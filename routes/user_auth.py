@@ -122,3 +122,15 @@ def edit_profile():
 
     return render_template('auth/edit_profile.html', user=user)
 
+
+@user_auth_bp.route('/delete_account', methods=['POST'])
+def delete_account():
+    if 'user_id' not in session:
+        return redirect(url_for('user_auth.login'))
+
+    user = User.query.get(session['user_id'])
+    db.session.delete(user)
+    db.session.commit()
+    session.clear()
+    return redirect(url_for('user_auth.register'))  # أو login
+

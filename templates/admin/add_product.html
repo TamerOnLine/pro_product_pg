@@ -3,82 +3,8 @@
 
 {% block admin_content %}
   <h2 class="mb-4 text-center">إضافة منتج جديد</h2>
-
-  <form
-    method="POST"
-    enctype="multipart/form-data"
-    class="bg-white p-4 rounded shadow-sm"
-  >
-    <div class="mb-3">
-      <label for="product_code" class="form-label">كود المنتج</label>
-      <input
-        type="text"
-        class="form-control"
-        name="product_code"
-        required
-      >
-    </div>
-
-    <div class="mb-3">
-      <label for="name" class="form-label">اسم المنتج</label>
-      <input
-        type="text"
-        class="form-control"
-        name="name"
-        required
-      >
-    </div>
-
-    <div class="mb-3">
-      <label for="price" class="form-label">السعر (€)</label>
-      <input
-        type="number"
-        step="0.01"
-        class="form-control"
-        name="price"
-        required
-      >
-    </div>
-
-    <div class="mb-3">
-      <label for="description" class="form-label">الوصف</label>
-      <textarea name="description" class="form-control rich"></textarea>
-    </div>
-
-    <div class="mb-3">
-      <label for="specs" class="form-label">المواصفات</label>
-      <textarea name="specs" class="form-control rich"></textarea>
-    </div>
-
-    <div class="mb-3">
-      <label for="image" class="form-label">صورة المنتج</label>
-      <input
-        type="file"
-        class="form-control"
-        name="image"
-        accept="image/*"
-      >
-    </div>
-
-    <div class="text-center">
-      <button type="submit" class="btn btn-primary">إضافة المنتج</button>
-    </div>
+  <form method="POST" enctype="multipart/form-data" class="bg-white p-4 rounded shadow-sm">
+    {% include 'shared/product_form.html' %}
   </form>
-
-  <!-- TinyMCE Integration -->
-  <script
-    src="https://cdn.tiny.cloud/1/{{ tinymce_api_key }}/tinymce/6/tinymce.min.js"
-    referrerpolicy="origin"
-  ></script>
-  <script>
-    tinymce.init({
-      selector: 'textarea.rich',
-      directionality: 'rtl',
-      language: 'ar',
-      height: 300,
-      plugins: 'lists link image preview code hr table textcolor media',
-      toolbar: 'undo redo | styles | bold italic underline forecolor backcolor | alignright aligncenter alignleft | bullist numlist | hr table media | link image | code preview',
-      menubar: false
-    });
-  </script>
+  {% include 'shared/tinymce.html' %}
 {% endblock %}

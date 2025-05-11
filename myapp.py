@@ -10,6 +10,9 @@ import cloudinary.uploader
 from models.models_definitions import db, User
 from routes import register_routes
 
+from config.logging_config import setup_logging
+
+
 
 load_dotenv()
 
@@ -21,6 +24,8 @@ def create_app():
         Flask: Configured Flask application instance.
     """
     app = Flask(__name__)
+    setup_logging(app)
+
     app.secret_key = os.getenv('cv_kay')
 
     # Configure Cloudinary

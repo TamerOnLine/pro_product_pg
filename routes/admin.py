@@ -71,14 +71,17 @@ def admin_add_product():
             )
 
         try:
+            sequence = Product.query.count() + 1
+
             product = Product(
-                product_code=request.form['product_code'],
                 name=request.form['name'],
                 price=float(request.form['price']),
                 description=request.form.get('description'),
                 image=image_url,
                 specs=request.form.get('specs')
             )
+            product.generate_code(sequence)
+
             db.session.add(product)
             db.session.commit()
             return redirect(url_for('admin.admin_dashboard'))

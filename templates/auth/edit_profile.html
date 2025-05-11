@@ -42,5 +42,10 @@
         </a>
       </div>
     </form>
+
+  <form action="{{ url_for('user_auth.delete_account') }}" method="POST" onsubmit="return confirm('هل أنت متأكد من حذف الحساب؟');">
+    <button type="submit" class="btn btn-danger mt-4">🗑️ حذف الحساب</button>
+  </form>
+
   </div>
 {% endblock %}
