@@ -126,3 +126,36 @@ def edit_profile():
         return redirect(url_for('merchant.profile'))
 
     return render_template('merchant/edit_profile.html', user=user)
+
+@merchant_bp.route('/products/<int:product_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_product(product_id):
+    if session.get('role') != 'merchant':
+        return render_template("errors/unauthorized.html"), 403
+
+    product = Product.query.get_or_404(product_id)
+
+    # تأكد أن التاجر يملك هذا المنتج
+    if product.merchant_id != session['user_id']:
+        return render_template("errors/unauthorized.html"), 403
+
+    if request.method == 'POST':
+        product.name = request.form['name']
+        product.price = float(request.form['price'])
+        product.description = request.form.get('description')
+        product.specs = request.form.get('specs')
+
+        image = request.files.get('image')
+        if image and image.filename:
+            upload_result = cloudinary.uploader.upload(image)
+            product.image = upload_result.get('secure_url')
+
+        db.session.commit()
+        return redirect(url_for('merchant.my_products'))
+
+    return render_template(
+        'merchant/edit_product.html',
+        product=product,
+        tinymce_api_key=os.getenv('TINYMCE_API_KEY')
+    )
+
