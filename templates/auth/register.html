@@ -75,7 +75,7 @@
         >
           <option value="customer" {% if request.form.role == "customer" %}selected{% endif %}>Customer</option>
           <option value="merchant" {% if request.form.role == "merchant" %}selected{% endif %}>Merchant</option>
-          <option value="admin" {% if request.form.role == "admin" %}selected{% endif %}>Admin</option>
+
         </select>
         {% if errors and errors.role %}
           <div class="text-danger small mt-1">{{ errors.role[0] }}</div>
