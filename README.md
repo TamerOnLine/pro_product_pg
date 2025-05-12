@@ -1,104 +1,146 @@
+# 🛍️ MyStore
 
-# 🛒 Flask Product Manager - tameronline-pro_product
+[![Flask](https://img.shields.io/badge/Framework-Flask-blue)](https://flask.palletsprojects.com/)
+[![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-336791?logo=postgresql\&logoColor=white)](https://www.postgresql.org/)
+[![Cloudinary](https://img.shields.io/badge/Media-Cloudinary-3448C5?logo=cloudinary\&logoColor=white)](https://cloudinary.com/)
+[![Render](https://img.shields.io/badge/Deployed%20on-Render-46C1F6?logo=render\&logoColor=white)](https://render.com/)
 
-A simple and professional product management system built with Python and Flask. It includes an admin panel, public product listing, image uploads, and SQLite-based storage.
+## 🎯 Overview
 
----
-
-## ✅ Main Features
-
-- 🔐 Admin dashboard with login protection
-- ➕ Add products with image, description, specs, and price
-- 🖼️ Upload and store product images in `static/uploads/`
-- 📝 View product details on a separate page
-- 🗂️ Admin page to manage (edit/delete) all products
-- 🧹 Button to reset the entire database
-- 🌐 Fully Arabic user interface with clean design
+A robust and professional **Product Management System** built with Python (Flask), PostgreSQL, and Cloudinary. It features a multi-role interface (Admin / Merchant / Customer), product approval workflows, dynamic notifications, and Arabic RTL support.
 
 ---
 
-## 📁 Project Structure
+## 🚀 Features
+
+* 🔒 Role-based login: Admin, Merchant, Customer
+* ➕ Add, edit, delete, and approve products with rich text and image upload
+* ✅ Dynamic product approval and notification system
+* 🖼️ Cloudinary integration for secure and optimized image hosting
+* 📨 Real-time notification flow for product tasks
+* 🌐 Full Arabic RTL interface via Flask-Babel (i18n)
+* 🧼 Form validation and input sanitization
+* 📊 Admin dashboard and merchant portal
+* 🛠️ Reset DB, seed accounts, test error pages (dev only)
+
+---
+
+## 🧱 Project Structure
 
 ```
-tameronline-pro_product/
-├── myapp.py              # Main application entry point
-├── config.py             # App configuration
-├── requirements.txt      # Required packages
-├── instance/products.db  # SQLite database
-├── models/               # Product model definition
-├── routes/               # Admin and user routes
-├── templates/            # HTML templates for both admin and user views
-├── static/               # CSS and image uploads
-├── utils/logic/          # Helper modules (currently empty)
-└── .env                  # (Optional) Environment variables
+tameronline-pro_product_pg/
+├── myapp.py               # Main entry point (Flask app)
+├── config.py              # App configuration
+├── models/                # SQLAlchemy Models (User, Product, Notification)
+├── routes/                # Route blueprints: auth, admin, merchant, reset, etc.
+├── logic/                 # Notifications, validation, flow control
+├── templates/             # Jinja2 HTML templates
+├── static/                # CSS and media folders
+├── render.yaml            # Deployment file for Render.com
+├── requirements.txt       # Python dependencies
+└── .env                   # Environment config (locally)
 ```
 
 ---
 
-## ⚙️ Running Locally
+## ⚙️ Setup Instructions
 
-### 1. Clone the Repository:
+### 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/tameronline-pro_product.git
-cd tameronline-pro_product
+git clone https://github.com/your-username/tameronline-pro_product_pg.git
+cd tameronline-pro_product_pg
 ```
 
-### 2. Create a Virtual Environment and Install Dependencies:
+### 2. Create a virtual environment:
 
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  # Windows: venv\Scripts\activate
+```
+
+### 3. Install dependencies:
+
+```bash
 pip install -r requirements.txt
 ```
 
-### 3. Set Environment Variables:
+### 4. Set environment variables:
 
-Create a `.env` file with the following:
+Create a `.env` file in the root:
 
 ```env
 cv_kay=your_secret_key_here
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD=your_password
+DATABASE_URL=your_postgresql_url
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+TINYMCE_API_KEY=your_tinymce_key
 ```
 
-### 4. Run the App:
+### 5. Initialize the database:
+
+```bash
+python init_db.py
+```
+
+### 6. Run the app:
 
 ```bash
 python myapp.py
 ```
 
-Open [http://localhost:8030](http://localhost:8030) in your browser.
+Visit: [http://localhost:8030](http://localhost:8030)
 
 ---
 
-## 🔐 Admin Login
+## 🧪 Development Tools
 
-- Username: as set in `ADMIN_USERNAME` in `.env`
-- Password: as set in `ADMIN_PASSWORD` in `.env`
-
----
-
-## 🗃️ Notes
-
-- Uses SQLite for local development
-- Images are saved under `static/uploads/` with unique names
-- Only valid image formats are accepted (png, jpg, jpeg, webp)
-- No categories, search, or API support yet
+* `/test-errors/401` or `/test-errors/500`: Simulate error pages
+* `/dev/reset`: Wipe and recreate DB in development mode
+* Logging stored in: `logs/error.log`
 
 ---
 
-## 📌 Future Improvements
+## 👤 Default Roles (on fresh DB)
 
-- ✅ Add product categories
-- ✅ Implement search functionality
-- ✅ Create a RESTful API
-- ✅ Add Contact/About pages
-- ✅ Enable notifications (e.g., email)
-- ✅ Deploy to PythonAnywhere / Render
+Use `create_super_admin_if_needed()` to generate first admin.
 
 ---
 
-## 📄 License
+## 📦 Deployment (Render.com)
 
-Open-source for personal and educational use.
+Deployment is configured via `render.yaml`:
+
+* PostgreSQL + Gunicorn + Cloudinary
+* Environment variables are auto-synced
+* `startCommand: gunicorn myapp:app`
+
+---
+
+## 📌 To-Do / Roadmap
+
+* [x] Add multilingual support
+* [x] Enable product categories
+* [x] Implement cart system
+* [x] Create REST API
+* [ ] Customer order flow
+* [ ] Stripe/PayPal integration
+
+---
+
+## 🌐 UI Language
+
+This project defaults to **Arabic (RTL)**. Language switching can be implemented using Flask-Babel’s `locale_selector_func`.
+
+---
+
+## 📝 License
+
+MIT License – Free for personal and educational use.
+
+---
+
+## 💡 Author
+
+**TamerOnline** – [LinkedIn](https://www.linkedin.com/in/tameronline/) | [GitHub](https://github.com/TamerOnLine)
