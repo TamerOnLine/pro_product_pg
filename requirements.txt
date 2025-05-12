@@ -6,5 +6,7 @@ psycopg2-binary
 gunicorn
 cloudinary
 bcrypt
+cerberus
+bleach
 
 

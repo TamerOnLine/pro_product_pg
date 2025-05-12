@@ -2,7 +2,7 @@ import os
 import getpass
 from datetime import datetime
 
-from flask import Flask, render_template, g
+from flask import Flask, render_template, g, session
 from dotenv import load_dotenv
 import cloudinary
 import cloudinary.uploader
@@ -12,6 +12,7 @@ from routes import register_routes
 
 from config.logging_config import setup_logging
 
+from routes import register_routes, register_error_handlers
 
 
 load_dotenv()
@@ -53,6 +54,8 @@ def create_app():
 
     db.init_app(app)
     register_routes(app)
+    register_error_handlers(app)
+
 
     return app
 
@@ -60,46 +63,10 @@ def create_app():
 app = create_app()
 
 
-@app.errorhandler(404)
-def page_not_found(e):
-    """
-    Render the 404 error page.
-
-    Args:
-        e (Exception): The exception raised.
-
-    Returns:
-        Tuple: Rendered 404 template and status code.
-    """
-    return render_template('errors/404.html'), 404
 
 
-@app.errorhandler(500)
-def internal_server_error(e):
-    """
-    Render the 500 error page.
-
-    Args:
-        e (Exception): The exception raised.
-
-    Returns:
-        Tuple: Rendered 500 template and status code.
-    """
-    return render_template('errors/500.html'), 500
 
 
-@app.errorhandler(403)
-def forbidden(e):
-    """
-    Render the 403 error page.
-
-    Args:
-        e (Exception): The exception raised.
-
-    Returns:
-        Tuple: Rendered 403 template and status code.
-    """
-    return render_template('errors/403.html'), 403
 
 
 @app.context_processor
@@ -124,6 +91,16 @@ def inject_globals():
     return {
         'site_brand': 'منتجي'  # This can be changed to any name later.
     }
+
+@app.context_processor
+def inject_unread_notifications():
+    from logic.notifications import get_user_notifications
+    role = session.get('role', 'visitor')
+    user_id = session.get('user_id')
+    notifications = get_user_notifications(role, user_id)
+    unread_count = sum(1 for n in notifications if not n.is_read)
+    return dict(unread_count=unread_count)
+
 
 
 def create_super_admin_if_needed():
@@ -166,4 +143,4 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
         create_super_admin_if_needed()
-    app.run(debug=True, host='0.0.0.0', port=8030)
+    app.run(debug=False, host='0.0.0.0', port=8030)

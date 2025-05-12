@@ -1,33 +1,64 @@
 from flask import Blueprint, request, render_template, redirect, url_for, session
 from models.models_definitions import db, User
+from logic.notifications import create_notification, get_user_notifications
+from logic.validation_utils import validate_form
+
+
 
 user_auth_bp = Blueprint('user_auth', __name__)
 
 
 @user_auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
-    """
-    Handle user registration by accepting form input for email, username, 
-    password, and role. Stores the new user in the database if no duplicate exists.
-
-    Returns:
-        Response: Redirects to login page upon success or renders the registration page.
-    """
     if request.method == 'POST':
-        email = request.form['email']
-        username = request.form['username']
-        password = request.form['password']
-        role = request.form.get('role', 'customer')
+        data = request.form.to_dict()
 
+        schema = {
+            'email': {
+                'type': 'string',
+                'regex': r'^[^@]+@[^@]+\.[^@]+$',
+                'required': True
+            },
+            'username': {
+                'type': 'string',
+                'minlength': 3,
+                'maxlength': 30,
+                'required': True
+            },
+            'password': {
+                'type': 'string',
+                'minlength': 8,
+                'required': True
+            },
+            'role': {
+                'type': 'string',
+                'allowed': ['admin', 'merchant', 'customer'],
+                'required': False
+            }
+        }
+
+        is_valid, result = validate_form(data, schema, sanitize_fields=['username'])
+
+        if not is_valid:
+            return render_template('auth/register.html', errors=result)
+
+        # التحقق من عدم وجود المستخدم مسبقًا
         existing_user = User.query.filter(
-            (User.email == email) | (User.username == username)
+            (User.email == result['email']) | (User.username == result['username'])
         ).first()
 
         if existing_user:
-            return "Email or username already in use."
+            return render_template('auth/register.html', errors={
+                'username': ['Email or username already in use.']
+            })
 
-        user = User(email=email, username=username, role=role)
-        user.set_password(password)
+        # إنشاء المستخدم
+        user = User(
+            email=result['email'],
+            username=result['username'],
+            role=result.get('role', 'customer')
+        )
+        user.set_password(result['password'])
         db.session.add(user)
         db.session.commit()
 
@@ -67,7 +98,8 @@ def login():
 
             return redirect(url_for('products.index'))
 
-        return "Invalid login credentials."
+        return render_template('auth/login.html', error="بيانات الدخول غير صحيحة")
+
 
     return render_template('auth/login.html')
 
@@ -115,8 +147,31 @@ def edit_profile():
     user = User.query.get(session['user_id'])
 
     if request.method == 'POST':
-        user.username = request.form.get('username')
-        user.email = request.form.get('email')
+        data = request.form.to_dict()
+
+        schema = {
+            'email': {
+                'type': 'string',
+                'regex': r'^[^@]+@[^@]+\.[^@]+$',
+                'required': True
+            },
+            'username': {
+                'type': 'string',
+                'minlength': 3,
+                'maxlength': 30,
+                'required': True
+            }
+        }
+
+        is_valid, result = validate_form(data, schema, sanitize_fields=['username'])
+
+        if not is_valid:
+            return render_template('auth/edit_profile.html', user=user, errors=result)
+
+
+
+        user.username = result['username']
+        user.email = result['email']
         db.session.commit()
         return redirect(url_for('user_auth.profile'))
 

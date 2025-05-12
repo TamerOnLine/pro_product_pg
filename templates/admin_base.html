@@ -48,6 +48,17 @@
         <div class="d-flex">
           {% if session['username'] %}
             <span class="text-white me-3">مرحبًا، {{ session['username'] }}</span>
+
+        <a href="{{ url_for('notifications.show_notifications') }}" class="nav-link position-relative">
+          🔔 الإشعارات
+          {% if unread_count and unread_count > 0 %}
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              {{ unread_count }}
+            </span>
+          {% endif %}
+        </a>
+
+
             <a
               href="{{ url_for('user_auth.logout') }}"
               class="btn btn-outline-light btn-sm"

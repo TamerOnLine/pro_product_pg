@@ -91,3 +91,23 @@ class User(db.Model):
     def __repr__(self):
         """Return a string representation of the user."""
         return f'<User {self.username}>'
+
+
+class Notification(db.Model):
+    __tablename__ = 'notifications'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    role = db.Column(db.String(20), nullable=False)  # admin, merchant, customer, visitor
+    type = db.Column(db.String(50), nullable=False, default='info')
+    message = db.Column(db.Text, nullable=False)
+
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=True)
+    order_id = db.Column(db.Integer, nullable=True)
+
+    is_read = db.Column(db.Boolean, default=False)
+    is_visible = db.Column(db.Boolean, default=True)  # ✅ الحقل الجديد
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<Notification {self.id} to {self.role} ({self.type})>"

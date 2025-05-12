@@ -1,9 +1,6 @@
-from flask import Blueprint, request, current_app, render_template, redirect, url_for, flash
+from flask import Blueprint, request, session, current_app, render_template, redirect, url_for, flash
 from models.models_definitions import db, Product
 import cloudinary.uploader
-
-
-
 
 
 
@@ -12,14 +9,13 @@ products_bp = Blueprint('products', __name__)
 
 @products_bp.route('/')
 def index():
-    """
-    Render the homepage with a list of approved products.
-
-    Returns:
-        str: Rendered HTML of the homepage with approved products.
-    """
-    products = Product.query.filter_by(is_approved=True).all()
-    return render_template('index.html', products=products)
+    try:
+        #raise Exception("اختبار خطأ داخلي")
+        products = Product.query.filter_by(is_approved=True).all()
+        return render_template('index.html', products=products)
+    except Exception as e:
+        current_app.logger.error("⚠️ خطأ داخلي في الصفحة الرئيسية", exc_info=True)
+        return render_template("500.html"), 500
 
 
 @products_bp.route('/product/<int:product_id>')
@@ -83,3 +79,5 @@ def add_product():
     except Exception as e:
         current_app.logger.exception("❌ حدث استثناء أثناء تنفيذ العملية")
         return "حدث خطأ غير متوقع. الرجاء المحاولة لاحقًا.", 500
+    
+

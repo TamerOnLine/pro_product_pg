@@ -15,28 +15,42 @@
     <form method="POST">
       <div class="mb-3">
         <label class="form-label">البريد الإلكتروني</label>
-        <input type="email" name="email" class="form-control" required>
+        <input type="email" name="email" class="form-control" value="{{ request.form.email or '' }}" required>
+        {% if errors and errors.email %}
+          <div class="text-danger small mt-1">{{ errors.email[0] }}</div>
+        {% endif %}
       </div>
 
       <div class="mb-3">
         <label class="form-label">اسم المستخدم</label>
-        <input type="text" name="username" class="form-control" required>
+        <input type="text" name="username" class="form-control" value="{{ request.form.username or '' }}" required>
+        {% if errors and errors.username %}
+          <div class="text-danger small mt-1">{{ errors.username[0] }}</div>
+        {% endif %}
       </div>
 
       <div class="mb-3">
         <label class="form-label">كلمة المرور</label>
         <input type="password" name="password" class="form-control" required>
+        {% if errors and errors.password %}
+          <div class="text-danger small mt-1">{{ errors.password[0] }}</div>
+        {% endif %}
       </div>
 
       <div class="mb-3">
         <label class="form-label">نوع الحساب</label>
         <select name="role" class="form-select" required>
-          <option value="customer">عميل</option>
-          <option value="merchant">تاجر</option>
+          <option value="customer" {% if request.form.role == "customer" %}selected{% endif %}>عميل</option>
+          <option value="merchant" {% if request.form.role == "merchant" %}selected{% endif %}>تاجر</option>
+          <option value="admin" {% if request.form.role == "admin" %}selected{% endif %}>مشرف</option>
         </select>
+        {% if errors and errors.role %}
+          <div class="text-danger small mt-1">{{ errors.role[0] }}</div>
+        {% endif %}
       </div>
 
       <button type="submit" class="btn btn-primary w-100">تسجيل</button>
     </form>
+
   </div>
 {% endblock %}

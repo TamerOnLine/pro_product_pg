@@ -8,6 +8,10 @@ from werkzeug.utils import secure_filename
 from routes.auth_utils import login_required, admin_only
 import cloudinary.uploader
 from cloudinary.utils import cloudinary_url
+from logic.notifications import create_notification, get_user_notifications
+from logic.notification_flow import advance_notification
+from logic.validation_utils import validate_email, validate_password, sanitize_text, validate_price
+
 
 
 admin_bp = Blueprint('admin', __name__)
@@ -48,17 +52,27 @@ def admin_products():
 @admin_only
 @login_required
 def admin_add_product():
-    """
-    Add a new product to the database.
-
-    Returns:
-        Response: Redirect to admin dashboard or render add product template.
-    """
     if request.method == 'POST':
+        data = request.form.to_dict()
+
+        schema = {
+            'name': {'type': 'string', 'minlength': 2, 'maxlength': 100, 'required': True},
+            'price': {'type': 'float', 'min': 0, 'required': True},
+            'description': {'type': 'string', 'required': False},
+            'specs': {'type': 'string', 'required': False}
+        }
+
+        from logic.validation_utils import validate_form
+
+        is_valid, result = validate_form(data, schema, sanitize_fields=['name', 'description', 'specs'])
+
+        if not is_valid:
+            return str(result), 400
+
         file = request.files.get('image')
         image_url = None
 
-        if file and file.filename != '' and allowed_file(file.filename):
+        if file and file.filename != '':
             upload_result = cloudinary.uploader.upload(file)
             public_id = upload_result['public_id']
             image_url, options = cloudinary_url(
@@ -74,11 +88,11 @@ def admin_add_product():
             sequence = Product.query.count() + 1
 
             product = Product(
-                name=request.form['name'],
-                price=float(request.form['price']),
-                description=request.form.get('description'),
+                name=result['name'],
+                price=result['price'],
+                description=result.get('description'),
                 image=image_url,
-                specs=request.form.get('specs'),
+                specs=result.get('specs'),
                 merchant_id=session.get("user_id")
             )
             product.generate_code(sequence)
@@ -97,29 +111,38 @@ def admin_add_product():
     )
 
 
+
 @admin_bp.route('/edit/<int:product_id>', methods=['GET', 'POST'])
 @admin_only
 @login_required
 def edit_product(product_id):
-    """
-    Edit an existing product in the database.
-
-    Args:
-        product_id (int): ID of the product to edit.
-
-    Returns:
-        Response: Redirect to products list or render edit template.
-    """
     product = Product.query.get_or_404(product_id)
 
     if request.method == 'POST':
-        product.name = request.form['name']
-        product.price = float(request.form['price'])
-        product.description = request.form.get('description')
-        product.specs = request.form.get('specs')
+        data = request.form.to_dict()
+
+        schema = {
+            'name': {'type': 'string', 'minlength': 2, 'maxlength': 100, 'required': True},
+            'price': {'type': 'float', 'min': 0, 'required': True},
+            'description': {'type': 'string', 'required': False},
+            'specs': {'type': 'string', 'required': False}
+        }
+
+        from logic.validation_utils import validate_form
+
+        is_valid, result = validate_form(data, schema, sanitize_fields=['name', 'description', 'specs'])
+
+        if not is_valid:
+            return str(result), 400
+
+        product.name = result['name']
+        product.price = result['price']
+        product.description = result.get('description')
+        product.specs = result.get('specs')
+        product.is_approved = False
 
         file = request.files.get('image')
-        if file and file.filename != '' and allowed_file(file.filename):
+        if file and file.filename != '':
             upload_result = cloudinary.uploader.upload(file)
             public_id = upload_result['public_id']
             image_url, options = cloudinary_url(
@@ -169,20 +192,28 @@ def system_links():
     return render_template('admin/system_links.html')
 
 
+
+
 @admin_bp.route('/approve/<int:product_id>', methods=['POST'])
 @admin_only
 @login_required
 def approve_product(product_id):
-    """
-    Mark a product as approved.
-
-    Args:
-        product_id (int): ID of the product to approve.
-
-    Returns:
-        Response: Redirect to product list.
-    """
     product = Product.query.get_or_404(product_id)
     product.is_approved = True
     db.session.commit()
+
+
+
+    advance_notification(
+        product_id=product.id,
+        from_role='admin',
+        from_type='product_edited',
+        to_user_id=product.merchant_id,
+        to_role='merchant',
+        to_type='product_approved',
+        message=f"✅ تم اعتماد منتجك: {product.name}"
+    )
+
+
+
     return redirect(url_for('admin.admin_products'))
