@@ -1,35 +1,49 @@
 {% extends "base.html" %}
-{% block title %}بياناتي{% endblock %}
+{% block title %}My Profile{% endblock %}
 
 {% block content %}
   <div class="container text-center">
-    <h2 class="mb-4">👤 بياناتي الشخصية</h2>
+    <h2 class="mb-4">👤 My Personal Information</h2>
 
-    <table class="table table-bordered bg-white w-50 mx-auto">
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="alert alert-info mt-4">
+          {% for category, message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Profile Information Table -->
+    <table class="table table-bordered bg-white w-100 w-md-50 mx-auto">
       <tr>
-        <th>الاسم</th>
+        <th>Username</th>
         <td>{{ user.username }}</td>
       </tr>
       <tr>
-        <th>البريد الإلكتروني</th>
+        <th>Email</th>
         <td>{{ user.email }}</td>
       </tr>
       <tr>
-        <th>الدور</th>
+        <th>Role</th>
         <td>{{ user.role }}</td>
       </tr>
       <tr>
-        <th>تاريخ الإنشاء</th>
+        <th>Created At</th>
         <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
       </tr>
     </table>
 
+    <!-- Edit Profile Button -->
     <div class="text-center my-3">
       <a
         href="{{ url_for('merchant.edit_profile') }}"
         class="btn btn-outline-secondary"
+        aria-label="Edit profile information"
       >
-        ✏️ تعديل البيانات
+        ✏️ Edit Profile
       </a>
     </div>
   </div>

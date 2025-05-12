@@ -1,11 +1,21 @@
-from flask import Blueprint, session, request, render_template, redirect, url_for, abort
+from flask import Blueprint, session, request, render_template, redirect, url_for, abort, current_app
 from models.models_definitions import db, Notification
-from logic.notifications import get_user_notifications
+from logic.notification_service import get_user_notifications
 
 notifications_bp = Blueprint('notifications', __name__)
 
+def check_user_permissions(note):
+    """Helper function to check if the current user has permission to modify the notification."""
+    role = session.get('role')
+    user_id = session.get('user_id')
+
+    if note.role != role or (note.user_id and note.user_id != user_id):
+        current_app.logger.warning(f"Unauthorized access attempt by user {session.get('username')}")
+        abort(403)
+
 @notifications_bp.route('/notifications')
 def show_notifications():
+    """Show a list of notifications for the current user."""
     role = session.get('role', 'visitor')
     user_id = session.get('user_id')
 
@@ -21,12 +31,11 @@ def show_notifications():
 
 @notifications_bp.route('/notifications/<int:note_id>/hide', methods=['POST'])
 def hide_notification(note_id):
+    """Hide a specific notification."""
     note = Notification.query.get_or_404(note_id)
-    role = session.get('role')
-    user_id = session.get('user_id')
 
-    if note.role != role or (note.user_id and note.user_id != user_id):
-        abort(403)
+    # Check if the user has permission to hide this notification
+    check_user_permissions(note)
 
     note.is_visible = False
     db.session.commit()
@@ -35,12 +44,11 @@ def hide_notification(note_id):
 
 @notifications_bp.route('/notifications/<int:note_id>/restore', methods=['POST'])
 def restore_notification(note_id):
+    """Restore a previously hidden notification."""
     note = Notification.query.get_or_404(note_id)
-    role = session.get('role')
-    user_id = session.get('user_id')
 
-    if note.role != role or (note.user_id and note.user_id != user_id):
-        abort(403)
+    # Check if the user has permission to restore this notification
+    check_user_permissions(note)
 
     note.is_visible = True
     db.session.commit()
@@ -49,6 +57,7 @@ def restore_notification(note_id):
 
 @notifications_bp.route('/notifications/archive')
 def notification_archive():
+    """Show the archived notifications (hidden ones)."""
     role = session.get('role', 'visitor')
     user_id = session.get('user_id')
 

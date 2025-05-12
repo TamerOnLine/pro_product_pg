@@ -1,11 +1,8 @@
 from datetime import datetime
-
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
 db = SQLAlchemy()
-
 
 class Product(db.Model):
     """Database model for products.
@@ -33,17 +30,17 @@ class Product(db.Model):
     specs = db.Column(db.Text)
     product_code = db.Column(db.String(30), unique=True, nullable=False)
     merchant_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
-    is_approved = db.Column(db.Boolean, default=False)
+    is_approved = db.Column(db.Boolean, default=False)  # Set default approval as False
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def __repr__(self):
         """Return a string representation of the product."""
         return f'<Product {self.name}>'
-    
+
     def generate_code(self, sequence):
+        """Generate a unique product code based on merchant ID and sequence."""
         if self.merchant_id:
             self.product_code = f"USR{self.merchant_id:06d}-PRO{sequence:03d}"
-
 
 
 class User(db.Model):
@@ -94,20 +91,34 @@ class User(db.Model):
 
 
 class Notification(db.Model):
+    """Database model for notifications.
+
+    Attributes:
+        id (int): Primary key.
+        user_id (int): Foreign key to the user.
+        role (str): Role of the user to notify (admin, merchant, customer, visitor).
+        type (str): Type of notification (info, success, error).
+        message (str): Notification message.
+        product_id (int): Foreign key to the associated product.
+        order_id (int): Optional foreign key to the associated order.
+        is_read (bool): Status of whether the notification has been read.
+        is_visible (bool): Status of whether the notification is visible.
+        created_at (datetime): Timestamp of when the notification was created.
+    """
+
     __tablename__ = 'notifications'
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     role = db.Column(db.String(20), nullable=False)  # admin, merchant, customer, visitor
-    type = db.Column(db.String(50), nullable=False, default='info')
+    type = db.Column(db.String(50), nullable=False, default='info')  # Default type is 'info'
     message = db.Column(db.Text, nullable=False)
-
     product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=True)
     order_id = db.Column(db.Integer, nullable=True)
-
-    is_read = db.Column(db.Boolean, default=False)
-    is_visible = db.Column(db.Boolean, default=True)  # ✅ الحقل الجديد
+    is_read = db.Column(db.Boolean, default=False)  # Default is unread
+    is_visible = db.Column(db.Boolean, default=True)  # Default is visible
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
+        """Return a string representation of the notification."""
         return f"<Notification {self.id} to {self.role} ({self.type})>"

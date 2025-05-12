@@ -1,12 +1,35 @@
 {% extends 'admin_base.html' %}
-{% block title %}تعديل المنتج{% endblock %}
+{% block title %}Edit Product{% endblock %}
 
 {% block admin_content %}
-  <h2 class="mb-4 text-center">تعديل المنتج</h2>
+  <h2 class="mb-4 text-center">Edit Product</h2>
 
+  <!-- Display error messages if any -->
+  {% if errors %}
+    <div class="alert alert-danger">
+      <ul>
+        {% for field, messages in errors.items() %}
+          <li>{{ field }}: {{ messages | join(', ') }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  <!-- Product Edit Form -->
   <form method="POST" enctype="multipart/form-data" class="bg-white p-4 rounded shadow-sm">
     {% include 'shared/product_form.html' %}
   </form>
 
   {% include 'shared/tinymce.html' %}
+
+  <!-- Flash messages (success/error) -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="alert alert-info mt-4">
+        {% for category, message in messages %}
+          <p>{{ message }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
 {% endblock %}

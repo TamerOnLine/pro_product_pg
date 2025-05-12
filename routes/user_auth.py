@@ -1,18 +1,17 @@
-from flask import Blueprint, request, render_template, redirect, url_for, session
+from flask import Blueprint, request, session, current_app, render_template, redirect, url_for, flash
 from models.models_definitions import db, User
-from logic.notifications import create_notification, get_user_notifications
+from logic.notification_service import create_notification, get_user_notifications
 from logic.validation_utils import validate_form
 
 
-
 user_auth_bp = Blueprint('user_auth', __name__)
-
 
 @user_auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         data = request.form.to_dict()
 
+        # Define validation schema
         schema = {
             'email': {
                 'type': 'string',
@@ -37,31 +36,34 @@ def register():
             }
         }
 
+        # Validate the form data
         is_valid, result = validate_form(data, schema, sanitize_fields=['username'])
-
         if not is_valid:
+            flash("There were errors in your registration form.", "error")
             return render_template('auth/register.html', errors=result)
 
-        # التحقق من عدم وجود المستخدم مسبقًا
+        # Check if the user already exists
         existing_user = User.query.filter(
             (User.email == result['email']) | (User.username == result['username'])
         ).first()
 
         if existing_user:
+            flash("Email or username already in use.", "error")
             return render_template('auth/register.html', errors={
                 'username': ['Email or username already in use.']
             })
 
-        # إنشاء المستخدم
+        # Create the user and hash the password
         user = User(
             email=result['email'],
             username=result['username'],
             role=result.get('role', 'customer')
         )
-        user.set_password(result['password'])
+        user.set_password(result['password'])  # Hash the password before saving
         db.session.add(user)
         db.session.commit()
 
+        flash(f"Welcome {user.username}, you have successfully registered!", "success")
         return redirect(url_for('user_auth.login'))
 
     return render_template('auth/register.html')
@@ -84,10 +86,12 @@ def login():
             (User.email == email_or_username) | (User.username == email_or_username)
         ).first()
 
-        if user and user.check_password(password):
+        if user and user.check_password(password):  # Verify password
             session['user_id'] = user.id
             session['username'] = user.username
             session['role'] = user.role
+
+            flash("Successfully logged in!", "success")
 
             if user.role == 'admin':
                 return redirect(url_for('admin.admin_dashboard'))
@@ -98,8 +102,8 @@ def login():
 
             return redirect(url_for('products.index'))
 
-        return render_template('auth/login.html', error="بيانات الدخول غير صحيحة")
-
+        flash("Invalid login credentials. Please try again.", "error")
+        return render_template('auth/login.html', error="Invalid login credentials")
 
     return render_template('auth/login.html')
 
@@ -127,11 +131,13 @@ def logout():
         Response: Redirects to login page.
     """
     session.clear()
+    flash("You have been logged out.", "info")
     return redirect(url_for('user_auth.login'))
 
 
 @user_auth_bp.route('/profile')
 def profile():
+    """Display the current user's profile."""
     if 'user_id' not in session:
         return redirect(url_for('user_auth.login'))
 
@@ -141,6 +147,7 @@ def profile():
 
 @user_auth_bp.route('/edit', methods=['GET', 'POST'])
 def edit_profile():
+    """Allow the user to edit their profile."""
     if 'user_id' not in session:
         return redirect(url_for('user_auth.login'))
 
@@ -149,6 +156,7 @@ def edit_profile():
     if request.method == 'POST':
         data = request.form.to_dict()
 
+        # Validation schema
         schema = {
             'email': {
                 'type': 'string',
@@ -163,16 +171,19 @@ def edit_profile():
             }
         }
 
+        # Validate the data
         is_valid, result = validate_form(data, schema, sanitize_fields=['username'])
 
         if not is_valid:
+            flash("There were errors in updating your profile.", "error")
             return render_template('auth/edit_profile.html', user=user, errors=result)
 
-
-
+        # Update user data
         user.username = result['username']
         user.email = result['email']
         db.session.commit()
+
+        flash("Your profile has been updated successfully.", "success")
         return redirect(url_for('user_auth.profile'))
 
     return render_template('auth/edit_profile.html', user=user)
@@ -180,6 +191,7 @@ def edit_profile():
 
 @user_auth_bp.route('/delete_account', methods=['POST'])
 def delete_account():
+    """Allow the user to delete their account."""
     if 'user_id' not in session:
         return redirect(url_for('user_auth.login'))
 
@@ -187,5 +199,5 @@ def delete_account():
     db.session.delete(user)
     db.session.commit()
     session.clear()
-    return redirect(url_for('user_auth.register'))  # أو login
-
+    flash("Your account has been deleted.", "warning")
+    return redirect(url_for('user_auth.register'))  # Redirect to register page or login

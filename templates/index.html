@@ -1,27 +1,35 @@
 {% extends 'visitor_base.html' %}
-{% block title %}كل المنتجات{% endblock %}
-{% block visitor_content %}
 
+{% block title %}All Products{% endblock %}
+
+{% block visitor_content %}
 <div class="row">
-  {% for product in products %}
-    <div class="col-md-4 mb-4">
-      <div class="card h-100 shadow-sm">
-        <img
-          src="{{ product.image }}"
-          class="card-img-top"
-          alt="{{ product.name }}"
-        >
-        <div class="card-body text-center">
-          <h5 class="card-title">{{ product.name }}</h5>
-          <p class="card-text text-muted">{{ product.price }} €</p>
-          <a
-            href="{{ url_for('products.product_detail', product_id=product.id) }}"
-            class="btn btn-outline-primary btn-sm"
-          >عرض التفاصيل</a>
+  {% if products %}
+    {% for product in products %}
+      <div class="col-md-4 col-sm-6 mb-4">
+        <div class="card h-100 shadow-sm">
+          <img
+            src="{{ product.image }}"
+            class="card-img-top"
+            alt="{{ product.name }} - Product Image"
+          >
+          <div class="card-body text-center">
+            <h5 class="card-title">{{ product.name }}</h5>
+            <p class="card-text text-muted">{{ '%.2f'|format(product.price) }} €</p>
+            <a
+              href="{{ url_for('products.product_detail', product_id=product.id) }}"
+              class="btn btn-outline-primary btn-sm"
+            >
+              View Details
+            </a>
+          </div>
         </div>
       </div>
+    {% endfor %}
+  {% else %}
+    <div class="col-12 text-center">
+      <p class="text-muted">No products available to display at the moment.</p>
     </div>
-  {% endfor %}
+  {% endif %}
 </div>
-
 {% endblock %}

@@ -9,13 +9,13 @@ import cloudinary.uploader
 
 from models.models_definitions import db, User
 from routes import register_routes
-
 from config.logging_config import setup_logging
-
-from routes import register_routes, register_error_handlers
+from i18n.__init__ import register_extensions
+from routes import register_error_handlers, register_routes
 
 
 load_dotenv()
+
 
 def create_app():
     """
@@ -55,18 +55,12 @@ def create_app():
     db.init_app(app)
     register_routes(app)
     register_error_handlers(app)
-
+    register_extensions(app)
 
     return app
 
 
 app = create_app()
-
-
-
-
-
-
 
 
 @app.context_processor
@@ -92,15 +86,15 @@ def inject_globals():
         'site_brand': 'منتجي'  # This can be changed to any name later.
     }
 
+
 @app.context_processor
 def inject_unread_notifications():
-    from logic.notifications import get_user_notifications
+    from logic.notification_service import get_user_notifications
     role = session.get('role', 'visitor')
     user_id = session.get('user_id')
     notifications = get_user_notifications(role, user_id)
     unread_count = sum(1 for n in notifications if not n.is_read)
     return dict(unread_count=unread_count)
-
 
 
 def create_super_admin_if_needed():
@@ -140,7 +134,16 @@ def create_super_admin_if_needed():
 
 
 if __name__ == '__main__':
+    # Set the environment first
+    app.config['ENV'] = os.getenv('FLASK_ENV', 'development')
+
+    # Ensure operations run within the application context (app context)
     with app.app_context():
-        db.create_all()
-        create_super_admin_if_needed()
-    app.run(debug=False, host='0.0.0.0', port=8030)
+        if app.config['ENV'] == 'development':  # Ensure these operations are only executed in development environment
+            db.create_all()
+            create_super_admin_if_needed()
+
+    # Run the app based on the environment
+    debug_mode = app.config['ENV'] == 'development'
+    app.run(debug=debug_mode, host='0.0.0.0', port=8030)
+

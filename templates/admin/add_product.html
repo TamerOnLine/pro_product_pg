@@ -1,10 +1,22 @@
 {% extends 'admin_base.html' %}
-{% block title %}إضافة منتج جديد{% endblock %}
+{% block title %}Add New Product{% endblock %}
 
 {% block admin_content %}
-  <h2 class="mb-4 text-center">إضافة منتج جديد</h2>
+  <h2 class="mb-4 text-center">Add New Product</h2>
+
+  {% if errors %}
+    <div class="alert alert-danger">
+      <ul>
+        {% for field, messages in errors.items() %}
+          <li>{{ field }}: {{ messages | join(', ') }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
   <form method="POST" enctype="multipart/form-data" class="bg-white p-4 rounded shadow-sm">
     {% include 'shared/product_form.html' %}
   </form>
+
   {% include 'shared/tinymce.html' %}
 {% endblock %}

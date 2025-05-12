@@ -1,41 +1,49 @@
-<!-- templates/admin/system_links.html -->
 {% extends 'admin_base.html' %}
 
-{% block title %}روابط النظام{% endblock %}
+{% block title %}System Links{% endblock %}
 
 {% block admin_content %}
-  <h2>🔗 روابط النظام</h2>
-  <ul style="line-height: 2;">
-    <li>
+  <h2 class="mb-4">🔗 System Links</h2>
+
+  <ul class="list-group" style="line-height: 2;">
+    <li class="list-group-item">
       <a
         href="https://supabase.com/dashboard/project/epquyvzhcirvzurfwczh/editor/17450"
-        target="_blank"
+        target="_blank" rel="noopener noreferrer"
+        class="d-flex align-items-center"
+        aria-label="Supabase Database Dashboard"
       >
-        📦 Supabase – قاعدة البيانات
+        <span class="mr-2">📦</span> Supabase – Database
       </a>
     </li>
-    <li>
+    <li class="list-group-item">
       <a
         href="https://dashboard.render.com/"
-        target="_blank"
+        target="_blank" rel="noopener noreferrer"
+        class="d-flex align-items-center"
+        aria-label="Render App Deployment Dashboard"
       >
-        🚀 Render – نشر التطبيق
+        <span class="mr-2">🚀</span> Render – App Deployment
       </a>
     </li>
-    <li>
+    <li class="list-group-item">
       <a
         href="https://console.cloudinary.com/app/c-b78315bc5c0401f733e5b11f3f1112/assets/media_library/homepage"
-        target="_blank"
+        target="_blank" rel="noopener noreferrer"
+        class="d-flex align-items-center"
+        aria-label="Cloudinary Media Library"
       >
-        🖼️ Cloudinary – مكتبة الصور
+        <span class="mr-2">🖼️</span> Cloudinary – Media Library
       </a>
     </li>
-    <li>
+    <li class="list-group-item">
       <a
         href="https://dashboard.uptimerobot.com/monitors"
-        target="_blank"
+        target="_blank" rel="noopener noreferrer"
+        class="d-flex align-items-center"
+        aria-label="UptimeRobot Monitoring Dashboard"
       >
-        📡 UptimeRobot – مراقبة التوفر
+        <span class="mr-2">📡</span> UptimeRobot – Monitoring
       </a>
     </li>
   </ul>

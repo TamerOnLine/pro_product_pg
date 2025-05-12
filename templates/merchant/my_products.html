@@ -1,19 +1,30 @@
 {% extends 'base.html' %}
-{% block title %}منتجاتي{% endblock %}
+{% block title %}My Products{% endblock %}
 
 {% block content %}
-  <h2 class="text-center mb-4">📦 منتجاتي</h2>
+  <h2 class="text-center mb-4">📦 My Products</h2>
+
+  <!-- Flash messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="alert alert-info mt-4">
+        {% for category, message in messages %}
+          <p>{{ message }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
 
   {% if products %}
     <div class="table-responsive">
       <table class="table table-bordered table-hover align-middle bg-white">
         <thead class="table-light text-center">
           <tr>
-            <th>الصورة</th>
-            <th>الاسم</th>
-            <th>السعر</th>
-            <th>الحالة</th>
-            <th>إجراءات</th>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -23,22 +34,27 @@
                 <img
                   src="{{ product.image }}"
                   alt="{{ product.name }}"
-                  style="width: 80px; height: 80px; object-fit: cover;"
+                  class="img-fluid"
+                  style="width: 80px; height: 80px; object-fit: cover; border-radius: 6px;"
+                  aria-label="Product image for {{ product.name }}"
                 >
               </td>
               <td>{{ product.name }}</td>
               <td>{{ product.price }} €</td>
               <td>
                 {% if product.is_approved %}
-                  <span class="badge bg-success">معتمد ✅</span>
+                  <span class="badge bg-success" aria-label="Approved">Approved ✅</span>
                 {% else %}
-                  <span class="badge bg-warning text-dark">بانتظار الموافقة ⏳</span>
+                  <span class="badge bg-warning text-dark" aria-label="Pending approval">Pending approval ⏳</span>
                 {% endif %}
               </td>
               <td>
-                <a href="{{ url_for('merchant.edit_product', product_id=product.id) }}"
-                   class="btn btn-sm btn-outline-warning">
-                  ✏️ تعديل
+                <a
+                  href="{{ url_for('merchant.edit_product', product_id=product.id) }}"
+                  class="btn btn-sm btn-outline-warning"
+                  aria-label="Edit product {{ product.name }}"
+                >
+                  ✏️ Edit
                 </a>
               </td>
             </tr>
@@ -47,6 +63,6 @@
       </table>
     </div>
   {% else %}
-    <p class="text-center text-muted">لا توجد منتجات حاليًا.</p>
+    <p class="text-center text-muted">No products available currently.</p>
   {% endif %}
 {% endblock %}

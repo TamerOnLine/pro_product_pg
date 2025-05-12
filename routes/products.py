@@ -3,20 +3,14 @@ from models.models_definitions import db, Product
 import cloudinary.uploader
 
 
-
 products_bp = Blueprint('products', __name__)
-
 
 @products_bp.route('/')
 def index():
-    try:
-        #raise Exception("اختبار خطأ داخلي")
-        products = Product.query.filter_by(is_approved=True).all()
-        return render_template('index.html', products=products)
-    except Exception as e:
-        current_app.logger.error("⚠️ خطأ داخلي في الصفحة الرئيسية", exc_info=True)
-        return render_template("500.html"), 500
 
+    products = Product.query.filter_by(is_approved=True).all()
+    return render_template('index.html', products=products)
+ 
 
 @products_bp.route('/product/<int:product_id>')
 def product_detail(product_id):
@@ -29,13 +23,15 @@ def product_detail(product_id):
     Returns:
         str: Rendered HTML of the product detail page.
     """
-    product = Product.query.get_or_404(product_id)
-    return render_template('product_detail.html', product=product)
+    try:
+        product = Product.query.get_or_404(product_id)
+        return render_template('product_detail.html', product=product)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()  # ستطبع الخطأ بالتفصيل في الطرفية
+        return f"Internal Error: {str(e)}", 500
 
-
-
-
-# دالة لحساب التسلسل الجديد للعميل
+# Function to calculate the next sequence number for a merchant
 def get_next_sequence_for_merchant(merchant_id):
     count = Product.query.filter_by(merchant_id=merchant_id).count()
     return count + 1
@@ -43,22 +39,34 @@ def get_next_sequence_for_merchant(merchant_id):
 @products_bp.route('/admin/add_product', methods=['POST'])
 def add_product():
     try:
+        # Getting the form data
         name = request.form['name']
         price = float(request.form['price'])
         description = request.form.get('description')
         specs = request.form.get('specs')
-        image = request.files.get('image')  # صورة من النموذج
-        merchant_id = 1  # عدّل لاحقًا لربطه بالمستخدم الحالي
+        image = request.files.get('image')  # Image from the form
+        merchant_id = 1  # Later, change this to link with the current authenticated user
 
+        # Validate required fields
+        if not name or not price:
+            flash("❌ Product name and price are required.", "error")
+            return redirect(url_for('products.index'))
+
+        # Get next product sequence number
         sequence = get_next_sequence_for_merchant(merchant_id)
 
-        # ✅ رفع الصورة إلى Cloudinary
+        # Image upload to Cloudinary
         image_url = None
         if image:
-            upload_result = cloudinary.uploader.upload(image)
-            image_url = upload_result.get('secure_url')
+            try:
+                upload_result = cloudinary.uploader.upload(image)
+                image_url = upload_result.get('secure_url')
+            except Exception as e:
+                current_app.logger.error(f"Error uploading image to Cloudinary: {e}")
+                flash("❌ Error uploading image. Please try again later.", "error")
+                return redirect(url_for('products.index'))
 
-        # ✅ إنشاء المنتج وتخزين رابط الصورة
+        # Create product and store image URL
         product = Product(
             name=name,
             price=price,
@@ -69,15 +77,15 @@ def add_product():
         )
         product.generate_code(sequence)
 
+        # Add product to the database
         db.session.add(product)
         db.session.commit()
 
-        flash(f"✅ تمت إضافة المنتج بكود: {product.product_code}")
+        flash(f"✅ Product added successfully with code: {product.product_code}", "success")
         return redirect(url_for('admin.admin_dashboard'))
 
-
     except Exception as e:
-        current_app.logger.exception("❌ حدث استثناء أثناء تنفيذ العملية")
-        return "حدث خطأ غير متوقع. الرجاء المحاولة لاحقًا.", 500
-    
+        current_app.logger.exception("❌ Error during product creation")
+        flash("❌ An unexpected error occurred. Please try again later.", "error")
+        return redirect(url_for('products.index'))
 
