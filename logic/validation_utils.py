@@ -117,3 +117,24 @@ def coerce_price(value):
         return float(value)
     except (ValueError, TypeError):
         return value  # Let validator fail later if invalid
+
+
+import bleach
+
+def sanitize_rich_text(html):
+    """
+    Sanitize HTML input to allow safe formatting while preventing XSS attacks.
+    """
+    allowed_tags = [
+        'p', 'br', 'ul', 'ol', 'li', 'strong', 'em', 'b', 'i', 'u',
+        'a', 'span', 'div', 'blockquote', 'hr', 'table', 'tr', 'td',
+        'th', 'thead', 'tbody', 'h1', 'h2', 'h3'
+    ]
+    allowed_attrs = {
+        'a': ['href', 'title', 'target'],
+        'span': ['style'],
+        'div': ['style'],
+        '*': ['style']
+    }
+
+    return bleach.clean(html or '', tags=allowed_tags, attributes=allowed_attrs, strip=True)

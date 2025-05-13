@@ -71,7 +71,11 @@ def add_product():
             'specs': {'type': 'string', 'required': False}
         }
 
-        is_valid, result = validate_form(data, schema, sanitize_fields=['name', 'description', 'specs'])
+        is_valid, result = validate_form(data, schema, sanitize_fields=['name'])
+
+        from logic.validation_utils import sanitize_rich_text
+        result['description'] = sanitize_rich_text(result.get('description'))
+        result['specs'] = sanitize_rich_text(result.get('specs'))
 
         if not is_valid:
             return render_template(
@@ -191,7 +195,11 @@ def edit_product(product_id):
             'specs': {'type': 'string', 'required': False}
         }
 
-        is_valid, result = validate_form(data, schema, sanitize_fields=['name', 'description', 'specs'])
+        is_valid, result = validate_form(data, schema, sanitize_fields=['name'])
+
+        from logic.validation_utils import sanitize_rich_text
+        result['description'] = sanitize_rich_text(result.get('description'))
+        result['specs'] = sanitize_rich_text(result.get('specs'))
 
         if not is_valid:
             return render_template(
