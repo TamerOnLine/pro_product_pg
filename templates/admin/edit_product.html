@@ -1,10 +1,9 @@
 {% extends 'admin_base.html' %}
-{% block title %}Edit Product{% endblock %}
+{% block title %}{{ _('Edit Product') }}{% endblock %}
 
 {% block admin_content %}
-  <h2 class="mb-4 text-center">Edit Product</h2>
+  <h2 class="mb-4 text-center">{{ _('Edit Product') }}</h2>
 
-  <!-- Display error messages if any -->
   {% if errors %}
     <div class="alert alert-danger">
       <ul>
@@ -15,14 +14,12 @@
     </div>
   {% endif %}
 
-  <!-- Product Edit Form -->
   <form method="POST" enctype="multipart/form-data" class="bg-white p-4 rounded shadow-sm">
     {% include 'shared/product_form.html' %}
   </form>
 
   {% include 'shared/tinymce.html' %}
 
-  <!-- Flash messages (success/error) -->
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       <div class="alert alert-info mt-4">

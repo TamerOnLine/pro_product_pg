@@ -1,49 +1,27 @@
 {% extends 'admin_base.html' %}
-
-{% block title %}System Links{% endblock %}
+{% block title %}{{ _('System Links') }}{% endblock %}
 
 {% block admin_content %}
-  <h2 class="mb-4">🔗 System Links</h2>
-
+  <h2 class="mb-4">🔗 {{ _('System Links') }}</h2>
   <ul class="list-group" style="line-height: 2;">
     <li class="list-group-item">
-      <a
-        href="https://console.neon.tech/app/projects/bitter-waterfall-02027120?database=neondb&branchId=br-aged-dawn-a2k28lha"
-        target="_blank" rel="noopener noreferrer"
-        class="d-flex align-items-center"
-        aria-label="neon Database Dashboard"
-      >
-        <span class="mr-2">📦</span> neon – Database
+      <a href="https://console.neon.tech/..." target="_blank" rel="noopener noreferrer" class="d-flex align-items-center">
+        <span class="mr-2">📦</span> neon – {{ _('Database') }}
       </a>
     </li>
     <li class="list-group-item">
-      <a
-        href="https://dashboard.render.com/"
-        target="_blank" rel="noopener noreferrer"
-        class="d-flex align-items-center"
-        aria-label="Render App Deployment Dashboard"
-      >
-        <span class="mr-2">🚀</span> Render – App Deployment
+      <a href="https://dashboard.render.com/" target="_blank" rel="noopener noreferrer" class="d-flex align-items-center">
+        <span class="mr-2">🚀</span> Render – {{ _('App Deployment') }}
       </a>
     </li>
     <li class="list-group-item">
-      <a
-        href="https://console.cloudinary.com/app/c-b78315bc5c0401f733e5b11f3f1112/assets/media_library/homepage"
-        target="_blank" rel="noopener noreferrer"
-        class="d-flex align-items-center"
-        aria-label="Cloudinary Media Library"
-      >
-        <span class="mr-2">🖼️</span> Cloudinary – Media Library
+      <a href="https://console.cloudinary.com/..." target="_blank" rel="noopener noreferrer" class="d-flex align-items-center">
+        <span class="mr-2">🖼️</span> Cloudinary – {{ _('Media Library') }}
       </a>
     </li>
     <li class="list-group-item">
-      <a
-        href="https://dashboard.uptimerobot.com/monitors"
-        target="_blank" rel="noopener noreferrer"
-        class="d-flex align-items-center"
-        aria-label="UptimeRobot Monitoring Dashboard"
-      >
-        <span class="mr-2">📡</span> UptimeRobot – Monitoring
+      <a href="https://dashboard.uptimerobot.com/monitors" target="_blank" rel="noopener noreferrer" class="d-flex align-items-center">
+        <span class="mr-2">📡</span> UptimeRobot – {{ _('Monitoring') }}
       </a>
     </li>
   </ul>

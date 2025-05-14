@@ -7,9 +7,13 @@ products_bp = Blueprint('products', __name__)
 
 @products_bp.route('/')
 def index():
-
-    products = Product.query.filter_by(is_approved=True).all()
-    return render_template('index.html', products=products)
+    try:
+        products = Product.query.filter_by(is_approved=True).all()
+        return render_template('index.html', products=products)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return f"❌ Internal error: {e}", 500
  
 
 @products_bp.route('/product/<int:product_id>')

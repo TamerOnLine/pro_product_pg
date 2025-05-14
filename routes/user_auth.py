@@ -6,6 +6,12 @@ from logic.validation_utils import validate_form
 
 user_auth_bp = Blueprint('user_auth', __name__)
 
+@user_auth_bp.route('/set_language/<lang>')
+def set_language(lang):
+    session['lang'] = lang
+    return redirect(request.referrer or url_for('products.index'))
+
+
 @user_auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':

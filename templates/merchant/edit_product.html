@@ -1,10 +1,9 @@
 {% extends 'merchant_base.html' %}
-{% block title %}Edit Product{% endblock %}
+{% block title %}{{ _("Edit Product") }}{% endblock %}
 
 {% block content %}
-  <h2 class="mb-4 text-center">Edit Product</h2>
+  <h2 class="mb-4 text-center">{{ _("Edit Product") }}</h2>
 
-  <!-- Flash messages for feedback -->
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       <div class="alert alert-info mt-4">
@@ -15,11 +14,9 @@
     {% endif %}
   {% endwith %}
 
-  <!-- Product Edit Form -->
   <form method="POST" enctype="multipart/form-data" class="bg-white p-4 rounded shadow-sm w-100 w-md-50 mx-auto mt-4">
     {% include 'shared/product_form.html' %}
   </form>
 
-  <!-- TinyMCE for rich text editing (if needed) -->
   {% include 'shared/tinymce.html' %}
 {% endblock %}

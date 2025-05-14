@@ -1,6 +1,6 @@
 {% extends 'visitor_base.html' %}
 
-{% block title %}All Products{% endblock %}
+{% block title %}{{ _("All Products") }}{% endblock %}
 
 {% block visitor_content %}
 <div class="row">
@@ -11,7 +11,7 @@
           <img
             src="{{ product.image }}"
             class="card-img-top"
-            alt="{{ product.name }} - Product Image"
+            alt="{{ product.name }} - {{ _('Product Image') }}"
           >
           <div class="card-body text-center">
             <h5 class="card-title">{{ product.name }}</h5>
@@ -20,7 +20,7 @@
               href="{{ url_for('products.product_detail', product_id=product.id) }}"
               class="btn btn-outline-primary btn-sm"
             >
-              View Details
+              {{ _("View Details") }}
             </a>
           </div>
         </div>
@@ -28,7 +28,7 @@
     {% endfor %}
   {% else %}
     <div class="col-12 text-center">
-      <p class="text-muted">No products available to display at the moment.</p>
+      <p class="text-muted">{{ _("No products available to display at the moment.") }}</p>
     </div>
   {% endif %}
 </div>

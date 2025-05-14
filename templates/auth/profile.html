@@ -1,41 +1,35 @@
 {% extends "base.html" %}
-{% block title %}My Profile - Customer{% endblock %}
+{% block title %}{{ _('My Profile') }}{% endblock %}
 
 {% block content %}
-  <div class="container text-center">
-    <h2 class="mb-4">👤 My Profile</h2>
+<div class="container text-center">
+  <h2 class="mb-4">👤 {{ _('My Profile') }}</h2>
 
-    <!-- User Info Table -->
-    <table class="table table-bordered bg-white w-100 w-md-50 mx-auto">
-      <thead>
-        <tr>
-          <th scope="col">Name</th>
-          <td>{{ user.username }}</td>
-        </tr>
-        <tr>
-          <th scope="col">Email</th>
-          <td>{{ user.email }}</td>
-        </tr>
-        <tr>
-          <th scope="col">Role</th>
-          <td>{{ user.role }}</td>
-        </tr>
-        <tr>
-          <th scope="col">Created At</th>
-          <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
-        </tr>
-      </thead>
-    </table>
+  <table class="table table-bordered bg-white w-100 w-md-50 mx-auto">
+    <thead>
+      <tr>
+        <th scope="col">{{ _('Name') }}</th>
+        <td>{{ user.username }}</td>
+      </tr>
+      <tr>
+        <th scope="col">{{ _('Email') }}</th>
+        <td>{{ user.email }}</td>
+      </tr>
+      <tr>
+        <th scope="col">{{ _('Role') }}</th>
+        <td>{{ user.role }}</td>
+      </tr>
+      <tr>
+        <th scope="col">{{ _('Created At') }}</th>
+        <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+      </tr>
+    </thead>
+  </table>
 
-    <!-- Edit Profile Button -->
-    <div class="text-center my-3">
-      <a
-        href="{{ url_for('user_auth.edit_profile') }}"
-        class="btn btn-outline-secondary"
-        aria-label="Edit Profile"
-      >
-        ✏️ Edit Profile
-      </a>
-    </div>
+  <div class="text-center my-3">
+    <a href="{{ url_for('user_auth.edit_profile') }}" class="btn btn-outline-secondary">
+      ✏️ {{ _('Edit Profile') }}
+    </a>
   </div>
+</div>
 {% endblock %}

@@ -1,8 +1,8 @@
 {% extends 'admin_base.html' %}
-{% block title %}Add New Product{% endblock %}
+{% block title %}{{ _('Add New Product') }}{% endblock %}
 
 {% block admin_content %}
-  <h2 class="mb-4 text-center">Add New Product</h2>
+  <h2 class="mb-4 text-center">{{ _('Add New Product') }}</h2>
 
   {% if errors %}
     <div class="alert alert-danger">

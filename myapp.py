@@ -2,7 +2,7 @@ import os
 import getpass
 from datetime import datetime
 
-from flask import Flask, render_template, g, session
+from flask import Flask, render_template, g, session, request
 from dotenv import load_dotenv
 import cloudinary
 import cloudinary.uploader
@@ -10,12 +10,20 @@ import cloudinary.uploader
 from models.models_definitions import db, User
 from routes import register_routes
 from config.logging_config import setup_logging
-from i18n.__init__ import register_extensions
 from routes import register_error_handlers, register_routes
+from flask_babel import Babel
+from flask_babel import get_locale as babel_get_locale
+from flask import redirect, url_for, request, session
 
 
 load_dotenv()
+babel = Babel()
 
+def select_locale():
+    return session.get('lang') or request.accept_languages.best_match(['en', 'ar', 'de'])
+
+
+    
 
 def create_app():
     """
@@ -26,7 +34,9 @@ def create_app():
     """
     app = Flask(__name__)
     setup_logging(app)
-
+    babel.init_app(app, locale_selector=select_locale)
+    app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'translations'
+    app.jinja_env.globals['get_locale'] = select_locale
     app.secret_key = os.getenv('cv_kay')
 
     # Configure Cloudinary
@@ -51,16 +61,24 @@ def create_app():
         raise RuntimeError("DATABASE_URL not found in .env or Render settings.")
 
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    
+
 
     db.init_app(app)
     register_routes(app)
     register_error_handlers(app)
-    register_extensions(app)
 
     return app
 
 
 app = create_app()
+
+@app.route("/set_language/<lang>")
+def set_language(lang):
+    session["lang"] = lang
+    return redirect(request.referrer or url_for("index"))
+
+
 
 
 @app.context_processor

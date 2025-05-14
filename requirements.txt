@@ -9,3 +9,4 @@ bcrypt
 cerberus
 bleach
 flask-babel
+deep-translator

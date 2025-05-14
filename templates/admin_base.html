@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="{{ get_locale() }}" dir="{{ 'rtl' if get_locale() == 'ar' else 'ltr' }}">
+
   <head>
     <meta charset="UTF-8">
     <title>{% block title %}Dashboard{% endblock %}</title>

@@ -37,14 +37,14 @@
   <body>
     <div class="container text-center">
       <div class="error-code">401</div>
-      <h3 class="mb-4">🔒 Please log in to access this page</h3>
+      <h3 class="mb-4">🔒 {{ _('Please log in to access this page') }}</h3>
 
       <div class="btn-group">
         <a href="{{ url_for('user_auth.login') }}" class="btn btn-primary btn-custom" aria-label="Log In">
-          Log In
+          {{ _('Log In') }}
         </a>
         <a href="/" class="btn btn-outline-secondary btn-custom" aria-label="Go to Homepage">
-          Go to Homepage
+          🏠 {{ _('Go to Homepage') }}
         </a>
       </div>
     </div>
