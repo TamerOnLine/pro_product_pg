@@ -85,9 +85,9 @@
               🌐 {{ _("Language") }}
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="{{ url_for('set_language', lang='en') }}">En English</a></li>
-              <li><a class="dropdown-item" href="{{ url_for('set_language', lang='ar') }}">Ar العربية</a></li>
-              <li><a class="dropdown-item" href="{{ url_for('set_language', lang='de') }}">De Deutsch</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('user_auth.set_language', lang='en') }}">En English</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('user_auth.set_language', lang='ar') }}">Ar العربية</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('user_auth.set_language', lang='de') }}">De Deutsch</a></li>
             </ul>
           </div>
         </div>
