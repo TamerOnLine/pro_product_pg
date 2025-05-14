@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-05-14 08:46+0200\n"
+"POT-Creation-Date: 2025-05-14 10:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,11 +21,44 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
+#: templates/admin_base.html:35
+msgid "MyProduct"
+msgstr "ميزة myprod"
+
+#: templates/admin_base.html:41 templates/admin_base.html:46
+#: templates/admin_base.html:51 templates/base.html:31 templates/base.html:36
+#: templates/base.html:41
+msgid "Dashboard"
+msgstr "لوحة القيادة"
+
+#: templates/admin_base.html:59 templates/base.html:49
+#: templates/visitor_base.html:58
+msgid "Notifications"
+msgstr "إشعارات"
+
+#: templates/admin_base.html:70 templates/base.html:60 templates/base.html:65
+#: templates/visitor_base.html:70
+msgid "Logout"
+msgstr "تسجيل الخروج"
+
+#: templates/base.html:6
+msgid "My Website"
+msgstr "موقع الويب الخاص بي"
+
+#: templates/base.html:25
+msgid "MyStore"
+msgstr "ميستور"
+
+#: templates/auth/register.html:50 templates/base.html:69
+#: templates/visitor_base.html:79
+msgid "Register"
+msgstr "يسجل"
+
 #: templates/index.html:3
 msgid "All Products"
 msgstr "جميع المنتجات"
 
-#: templates/index.html:14
+#: templates/index.html:14 templates/shared/product_form.html:34
 msgid "Product Image"
 msgstr "صورة المنتج"
 
@@ -60,22 +93,10 @@ msgstr "لوحة معلومات المشرف"
 msgid "Welcome"
 msgstr "مرحباً"
 
-#: templates/visitor_base.html:58
-msgid "Notifications"
-msgstr "إشعارات"
-
-#: templates/visitor_base.html:70
-msgid "Logout"
-msgstr "تسجيل الخروج"
-
 #: templates/auth/login.html:2 templates/auth/login.html:5
 #: templates/auth/login.html:30 templates/visitor_base.html:75
 msgid "Login"
 msgstr "تسجيل الدخول"
-
-#: templates/auth/register.html:50 templates/visitor_base.html:79
-msgid "Register"
-msgstr "يسجل"
 
 #: templates/visitor_base.html:85
 msgid "Language"
@@ -110,7 +131,7 @@ msgid "Name"
 msgstr "اسم"
 
 #: templates/admin/admin_products.html:20
-#: templates/merchant/my_products.html:24
+#: templates/merchant/my_products.html:24 templates/shared/product_form.html:10
 msgid "Price"
 msgstr "سعر"
 
@@ -343,7 +364,7 @@ msgstr "من هنا ، يمكنك إدارة منتجات متجرك."
 msgid "My Products"
 msgstr "منتجاتي"
 
-#: templates/merchant/dashboard.html:25
+#: templates/merchant/dashboard.html:25 templates/shared/product_form.html:44
 msgid "Add Product"
 msgstr "أضف المنتج"
 
@@ -370,3 +391,19 @@ msgstr "لا توجد منتجات متاحة حاليا."
 #: templates/merchant/profile.html:6
 msgid "My Personal Information"
 msgstr "معلوماتي الشخصية"
+
+#: templates/shared/product_form.html:2
+msgid "Product Name"
+msgstr "اسم المنتج"
+
+#: templates/shared/product_form.html:3
+msgid "Enter product name"
+msgstr "أدخل اسم المنتج"
+
+#: templates/shared/product_form.html:18
+msgid "Description"
+msgstr "وصف"
+
+#: templates/shared/product_form.html:26
+msgid "Specifications"
+msgstr "تحديد"

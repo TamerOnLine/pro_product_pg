@@ -1,13 +1,13 @@
 <div class="mb-3">
-  <label class="form-label" for="name">Product Name</label>
-  <input type="text" class="form-control" id="name" name="name" value="{{ product.name if product else '' }}" placeholder="Enter product name" required>
+  <label class="form-label" for="name">🏷️ {{ _("Product Name") }}</label>
+  <input type="text" class="form-control" id="name" name="name" value="{{ product.name if product else '' }}" placeholder="{{ _('Enter product name') }}" required>
   {% if errors and errors.name %}
     <div class="text-danger small mt-1">{{ errors.name[0] }}</div>
   {% endif %}
 </div>
 
 <div class="mb-3">
-  <label class="form-label" for="price">Price (€)</label>
+  <label class="form-label" for="price">💶 {{ _("Price") }} (€)</label>
   <input type="number" step="0.01" class="form-control" id="price" name="price" value="{{ product.price if product else '' }}" placeholder="0.00" required>
   {% if errors and errors.price %}
     <div class="text-danger small mt-1">{{ errors.price[0] }}</div>
@@ -15,7 +15,7 @@
 </div>
 
 <div class="mb-3">
-  <label class="form-label" for="description">Description</label>
+  <label class="form-label" for="description">📋 {{ _("Description") }}</label>
   <textarea name="description" id="description" class="form-control rich" placeholder="Enter product description">{{ product.description if product else '' }}</textarea>
   {% if errors and errors.description %}
     <div class="text-danger small mt-1">{{ errors.description[0] }}</div>
@@ -23,7 +23,7 @@
 </div>
 
 <div class="mb-3">
-  <label class="form-label" for="specs">Specifications</label>
+  <label class="form-label" for="specs">🔧 {{ _("Specifications") }}</label>
   <textarea name="specs" id="specs" class="form-control rich" placeholder="Enter product specifications">{{ product.specs if product else '' }}</textarea>
   {% if errors and errors.specs %}
     <div class="text-danger small mt-1">{{ errors.specs[0] }}</div>
@@ -31,7 +31,7 @@
 </div>
 
 <div class="mb-3">
-  <label class="form-label" for="image">Product Image</label>
+  <label class="form-label" for="image">🖼️ {{ _("Product Image") }}</label>
   <input type="file" name="image" id="image" class="form-control" accept="image/*" aria-label="Upload product image">
   {% if product and product.image_url %}
     <div class="mt-2">
@@ -41,5 +41,5 @@
 </div>
 
 <div class="text-center mt-3">
-  <button type="submit" class="btn btn-primary">➕ Add Product</button>
+  <button type="submit" class="btn btn-primary">➕ {{ _("Add Product") }}</button>
 </div>

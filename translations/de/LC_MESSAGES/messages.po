@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-05-14 08:46+0200\n"
+"POT-Creation-Date: 2025-05-14 10:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,11 +21,44 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
+#: templates/admin_base.html:35
+msgid "MyProduct"
+msgstr "MyProduct"
+
+#: templates/admin_base.html:41 templates/admin_base.html:46
+#: templates/admin_base.html:51 templates/base.html:31 templates/base.html:36
+#: templates/base.html:41
+msgid "Dashboard"
+msgstr "Armaturenbrett"
+
+#: templates/admin_base.html:59 templates/base.html:49
+#: templates/visitor_base.html:58
+msgid "Notifications"
+msgstr "Benachrichtigungen"
+
+#: templates/admin_base.html:70 templates/base.html:60 templates/base.html:65
+#: templates/visitor_base.html:70
+msgid "Logout"
+msgstr "Abmelden"
+
+#: templates/base.html:6
+msgid "My Website"
+msgstr "Meine Website"
+
+#: templates/base.html:25
+msgid "MyStore"
+msgstr "Mystore"
+
+#: templates/auth/register.html:50 templates/base.html:69
+#: templates/visitor_base.html:79
+msgid "Register"
+msgstr "Registrieren"
+
 #: templates/index.html:3
 msgid "All Products"
 msgstr "Alle Produkte"
 
-#: templates/index.html:14
+#: templates/index.html:14 templates/shared/product_form.html:34
 msgid "Product Image"
 msgstr "Produktbild"
 
@@ -60,22 +93,10 @@ msgstr "Admin -Dashboard"
 msgid "Welcome"
 msgstr "Willkommen"
 
-#: templates/visitor_base.html:58
-msgid "Notifications"
-msgstr "Benachrichtigungen"
-
-#: templates/visitor_base.html:70
-msgid "Logout"
-msgstr "Abmelden"
-
 #: templates/auth/login.html:2 templates/auth/login.html:5
 #: templates/auth/login.html:30 templates/visitor_base.html:75
 msgid "Login"
 msgstr "Login"
-
-#: templates/auth/register.html:50 templates/visitor_base.html:79
-msgid "Register"
-msgstr "Registrieren"
 
 #: templates/visitor_base.html:85
 msgid "Language"
@@ -110,7 +131,7 @@ msgid "Name"
 msgstr "Name"
 
 #: templates/admin/admin_products.html:20
-#: templates/merchant/my_products.html:24
+#: templates/merchant/my_products.html:24 templates/shared/product_form.html:10
 msgid "Price"
 msgstr "Preis"
 
@@ -343,7 +364,7 @@ msgstr "Von hier aus können Sie die Produkte Ihres Geschäfts verwalten."
 msgid "My Products"
 msgstr "Meine Produkte"
 
-#: templates/merchant/dashboard.html:25
+#: templates/merchant/dashboard.html:25 templates/shared/product_form.html:44
 msgid "Add Product"
 msgstr "Produkt hinzufügen"
 
@@ -370,3 +391,19 @@ msgstr "Derzeit keine Produkte erhältlich."
 #: templates/merchant/profile.html:6
 msgid "My Personal Information"
 msgstr "Meine persönlichen Daten"
+
+#: templates/shared/product_form.html:2
+msgid "Product Name"
+msgstr "Produktname"
+
+#: templates/shared/product_form.html:3
+msgid "Enter product name"
+msgstr "Geben Sie den Produktnamen ein"
+
+#: templates/shared/product_form.html:18
+msgid "Description"
+msgstr "Beschreibung"
+
+#: templates/shared/product_form.html:26
+msgid "Specifications"
+msgstr "Spezifikationen"

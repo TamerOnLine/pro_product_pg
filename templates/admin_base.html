@@ -32,23 +32,23 @@
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
       <div class="container-fluid">
-        <a class="navbar-brand me-3" href="{{ url_for('products.index') }}">MyProduct</a>
+        <a class="navbar-brand me-3" href="{{ url_for('products.index') }}">📦 {{ _("MyProduct") }}</a>
 
         {% if session.get('role') == 'merchant' %}
           <a
             class="navbar-brand text-white {% if request.endpoint == 'merchant.dashboard' %}active-link{% endif %}"
             href="{{ url_for('merchant.dashboard') }}"
-          >🛠️ Dashboard</a>
+          >🛠️ {{ _("Dashboard") }}</a>
         {% elif session.get('role') == 'customer' %}
           <a
             class="navbar-brand text-white {% if request.endpoint == 'user_auth.dashboard' %}active-link{% endif %}"
             href="{{ url_for('user_auth.dashboard') }}"
-          >🛠️ Dashboard</a>
+          >🛠️ {{ _("Dashboard") }}</a>
         {% elif session.get('role') == 'admin' %}
           <a
             class="navbar-brand text-white {% if request.endpoint == 'admin.admin_dashboard' %}active-link{% endif %}"
             href="{{ url_for('admin.admin_dashboard') }}"
-          >🛠️ Dashboard</a>
+          >🛠️ {{ _("Dashboard") }}</a>
         {% endif %}
 
         <div class="d-flex">
@@ -56,7 +56,7 @@
             <span class="text-white me-3">Hello, {{ session['username'] }}</span>
 
             <a href="{{ url_for('notifications.show_notifications') }}" class="nav-link position-relative">
-              🔔 Notifications
+              🔔 {{ _("Notifications") }}
               {% if unread_count and unread_count > 0 %}
                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                   {{ unread_count }}
@@ -67,7 +67,7 @@
             <a
               href="{{ url_for('user_auth.logout') }}"
               class="btn btn-outline-light btn-sm"
-            >Logout</a>
+            >🚪 {{ _("Logout") }}</a>
           {% endif %}
         </div>
       </div>
