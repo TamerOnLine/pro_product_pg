@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-05-14 10:22+0200\n"
+"POT-Creation-Date: 2025-05-14 21:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,36 +21,41 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: templates/admin_base.html:35
+#: templates/admin_base.html:17
 msgid "MyProduct"
 msgstr "ميزة myprod"
 
-#: templates/admin_base.html:41 templates/admin_base.html:46
-#: templates/admin_base.html:51 templates/base.html:31 templates/base.html:36
-#: templates/base.html:41
+#: templates/admin_base.html:21 templates/admin_base.html:25
+#: templates/admin_base.html:29 templates/base.html:19 templates/base.html:21
+#: templates/base.html:23
 msgid "Dashboard"
 msgstr "لوحة القيادة"
 
-#: templates/admin_base.html:59 templates/base.html:49
-#: templates/visitor_base.html:58
+#: templates/admin_base.html:38 templates/base.html:31
+#: templates/visitor_base.html:36
 msgid "Notifications"
 msgstr "إشعارات"
 
-#: templates/admin_base.html:70 templates/base.html:60 templates/base.html:65
-#: templates/visitor_base.html:70
+#: templates/admin_base.html:47 templates/base.html:40 templates/base.html:44
+#: templates/visitor_base.html:45
 msgid "Logout"
 msgstr "تسجيل الخروج"
+
+#: templates/admin_base.html:52 templates/base.html:52
+#: templates/merchant_base.html:32 templates/visitor_base.html:58
+msgid "Language"
+msgstr "لغة"
 
 #: templates/base.html:6
 msgid "My Website"
 msgstr "موقع الويب الخاص بي"
 
-#: templates/base.html:25
+#: templates/base.html:16
 msgid "MyStore"
 msgstr "ميستور"
 
-#: templates/auth/register.html:50 templates/base.html:69
-#: templates/visitor_base.html:79
+#: templates/auth/register.html:50 templates/base.html:47
+#: templates/visitor_base.html:52
 msgid "Register"
 msgstr "يسجل"
 
@@ -75,34 +80,30 @@ msgid "Our Products"
 msgstr "منتجاتنا"
 
 #: templates/merchant/dashboard.html:2 templates/merchant/dashboard.html:6
-#: templates/visitor_base.html:40
+#: templates/visitor_base.html:19
 msgid "Merchant Dashboard"
 msgstr "لوحة القيادة التجارية"
 
-#: templates/auth/dashboard.html:2 templates/visitor_base.html:45
+#: templates/auth/dashboard.html:2 templates/visitor_base.html:23
 msgid "Customer Dashboard"
 msgstr "لوحة معلومات العملاء"
 
 #: templates/admin/dashboard.html:2 templates/admin/dashboard.html:6
-#: templates/visitor_base.html:50
+#: templates/visitor_base.html:27
 msgid "Admin Dashboard"
 msgstr "لوحة معلومات المشرف"
 
 #: templates/admin/dashboard.html:7 templates/auth/dashboard.html:6
-#: templates/merchant/dashboard.html:7 templates/visitor_base.html:55
+#: templates/merchant/dashboard.html:7 templates/visitor_base.html:33
 msgid "Welcome"
 msgstr "مرحباً"
 
 #: templates/auth/login.html:2 templates/auth/login.html:5
-#: templates/auth/login.html:30 templates/visitor_base.html:75
+#: templates/auth/login.html:30 templates/visitor_base.html:49
 msgid "Login"
 msgstr "تسجيل الدخول"
 
-#: templates/visitor_base.html:85
-msgid "Language"
-msgstr "لغة"
-
-#: templates/visitor_base.html:102
+#: templates/visitor_base.html:75
 msgid "All Rights Reserved"
 msgstr "جميع الحقوق محفوظة"
 
@@ -404,6 +405,14 @@ msgstr "أدخل اسم المنتج"
 msgid "Description"
 msgstr "وصف"
 
+#: templates/shared/product_form.html:19
+msgid "Enter product description"
+msgstr "أدخل وصف المنتج"
+
 #: templates/shared/product_form.html:26
 msgid "Specifications"
 msgstr "تحديد"
+
+#: templates/shared/product_form.html:27
+msgid "Enter product specifications"
+msgstr "أدخل مواصفات المنتج"

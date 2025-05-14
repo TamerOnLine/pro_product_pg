@@ -2,6 +2,10 @@
 {% block title %}{{ _("Edit Product") }}{% endblock %}
 
 {% block content %}
+
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+
+
   <h2 class="mb-4 text-center">{{ _("Edit Product") }}</h2>
 
   {% with messages = get_flashed_messages(with_categories=true) %}
@@ -18,5 +22,6 @@
     {% include 'shared/product_form.html' %}
   </form>
 
-  {% include 'shared/tinymce.html' %}
+
+
 {% endblock %}
