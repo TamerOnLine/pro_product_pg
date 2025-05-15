@@ -55,19 +55,38 @@
 <div class="row justify-content-center product-card">
   <div class="col-md-10 col-lg-8">
     <div class="card shadow-sm border-0">
-      {% if product.image %}
-        <img
-          src="{{ product.image }}"
-          class="card-img-top product-image"
-          alt="{{ product.name }}"
-        >
-      {% else %}
-        <img
-          src="https://via.placeholder.com/800x400?text=No+Image+Available"
-          class="card-img-top product-image"
-          alt="No Image Available"
-        >
-      {% endif %}
+      {% set main_image = product.images | selectattr('is_main') | list | first %}
+
+
+
+
+      {% if product.images %}
+  <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      {% for img in product.images %}
+        <div class="carousel-item {% if loop.first %}active{% endif %}">
+          <img src="{{ img.image_url }}" class="d-block w-100 product-image" alt="{{ product.name }}">
+        </div>
+      {% endfor %}
+    </div>
+    {% if product.images|length > 1 %}
+      <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </button>
+    {% endif %}
+  </div>
+{% else %}
+  <img
+    src="{{ url_for('static', filename='img/default.jpg') }}"
+    class="card-img-top product-image"
+    alt="{{ product.name }}"
+  >
+{% endif %}
+
+
       <div class="card-body text-center">
         <h3 class="product-title">{{ product.name }}</h3>
         {% if product.price is not none %}

@@ -1,6 +1,8 @@
 from flask import Blueprint, request, session, current_app, render_template, redirect, url_for, flash
 from models.models_definitions import db, Product
 import cloudinary.uploader
+from sqlalchemy.orm import joinedload
+
 
 
 products_bp = Blueprint('products', __name__)
@@ -8,7 +10,10 @@ products_bp = Blueprint('products', __name__)
 @products_bp.route('/')
 def index():
     try:
-        products = Product.query.filter_by(is_approved=True).all()
+        products = Product.query.options(
+        joinedload(Product.images)  # تأكد من استيراد joinedload من sqlalchemy.orm
+        ).all()
+
         return render_template('index.html', products=products)
     except Exception as e:
         import traceback

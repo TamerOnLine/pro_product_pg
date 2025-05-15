@@ -39,8 +39,13 @@
               <td>{{ product.name }}</td>
               <td>{{ product.price }} €</td>
               <td>
-                <a href="{{ url_for('merchant.edit_product', product_id=product.id) }}" class="btn btn-sm btn-primary">
+                <a href="{{ url_for('merchant.edit_product', product_id=product.id) }}" class="btn btn-sm btn-primary mb-1">
                   <i class="bi bi-pencil"></i> {{ _('Edit') }}
+                </a>
+
+                <a href="{{ url_for('product_images.manage_product_images', product_id=product.id) }}"
+                   class="btn btn-sm btn-outline-secondary mb-1">
+                  🖼 {{ _('Images') }}
                 </a>
 
                 {% if product.is_approved %}

@@ -63,7 +63,10 @@
   </nav>
 
   <div class="container py-5">
-    {% block admin_content %}{% endblock %}
+    {% block admin_content %}
+      {% block content %}{% endblock %}
+    {% endblock %}
+
   </div>
 
   <footer class="text-center mt-5 mb-3 text-muted">

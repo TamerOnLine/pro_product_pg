@@ -8,11 +8,13 @@
     {% for product in products %}
       <div class="col-md-4 col-sm-6 mb-4">
         <div class="card h-100 shadow-sm">
-          <img
-            src="{{ product.image }}"
-            class="card-img-top"
-            alt="{{ product.name }} - {{ _('Product Image') }}"
-          >
+      {% set main_image = product.images | selectattr('is_main') | list | first %}
+      <img
+        src="{{ main_image.image_url if main_image else url_for('static', filename='img/default.jpg') }}"
+        class="card-img-top"
+        alt="{{ product.name }}"
+      >
+
           <div class="card-body text-center">
             <h5 class="card-title">{{ product.name }}</h5>
             <p class="card-text text-muted">{{ '%.2f'|format(product.price) }} €</p>

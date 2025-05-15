@@ -7,6 +7,7 @@ from routes.notifications_view import notifications_bp
 from flask import render_template
 from werkzeug.routing import BuildError
 from routes.test_errors import test_errors_bp
+from routes.product_images_view import product_images_bp
 
 def register_routes(app):
     """
@@ -31,6 +32,7 @@ def register_routes(app):
     app.register_blueprint(merchant_bp)  # Merchant-related routes
     app.register_blueprint(notifications_bp)  # Routes related to notifications
     app.register_blueprint(test_errors_bp)  # Test routes for error handling (useful in dev mode)
+    app.register_blueprint(product_images_bp)
 
 
 def register_error_handlers(app):
