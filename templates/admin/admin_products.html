@@ -23,9 +23,17 @@
         </thead>
         <tbody>
           {% for product in products %}
+            {% set main_image = None %}
+            {% if product.images is sequence and product.images | length > 0 %}
+              {% set main_image = product.images | selectattr('is_main') | list | first %}
+            {% endif %}
+
             <tr class="text-center">
               <td>
-                <img src="{{ product.image }}" alt="Image of {{ product.name }}" class="product-image img-fluid" style="width: 80px; height: 80px; object-fit: cover; border-radius: 6px;">
+                <img src="{{ main_image.image_url if main_image else url_for('static', filename='img/default.jpg') }}"
+                     alt="{{ product.name }}"
+                     class="img-thumbnail"
+                     style="width: 80px; height: 80px; object-fit: cover; border-radius: 6px;">
               </td>
               <td>{{ product.name }}</td>
               <td>{{ product.price }} €</td>
@@ -34,7 +42,8 @@
                   <i class="bi bi-pencil"></i> {{ _('Edit') }}
                 </a>
 
-                <form action="{{ url_for('admin.delete_product', product_id=product.id) }}" method="post" class="d-inline" onsubmit="return confirm('{{ _('Are you sure you want to delete this product?') }}');">
+                <form action="{{ url_for('admin.delete_product', product_id=product.id) }}" method="post"
+                      class="d-inline" onsubmit="return confirm('{{ _('Are you sure you want to delete this product?') }}');">
                   <button type="submit" class="btn btn-sm btn-danger">
                     <i class="bi bi-trash"></i> {{ _('Delete') }}
                   </button>

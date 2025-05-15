@@ -33,6 +33,11 @@ def create_app():
         Flask: Configured Flask application instance.
     """
     app = Flask(__name__)
+    
+    app.config['TRAP_HTTP_EXCEPTIONS'] = True
+    app.config['PROPAGATE_EXCEPTIONS'] = True
+
+
     setup_logging(app)
     babel.init_app(app, locale_selector=select_locale)
     app.config['BABEL_TRANSLATION_DIRECTORIES'] = 'translations'

@@ -26,7 +26,6 @@ class Product(db.Model):
     name = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
     description = db.Column(db.Text)
-    image = db.Column(db.String(200))
     specs = db.Column(db.Text)
     product_code = db.Column(db.String(30), unique=True, nullable=False)
     merchant_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
@@ -122,3 +121,28 @@ class Notification(db.Model):
     def __repr__(self):
         """Return a string representation of the notification."""
         return f"<Notification {self.id} to {self.role} ({self.type})>"
+
+
+class ProductImage(db.Model):
+    """Database model for multiple images per product.
+
+    Attributes:
+        id (int): Primary key.
+        product_id (int): Foreign key to the associated product.
+        image_url (str): URL of the image.
+        is_main (bool): Indicates if this is the main image.
+        created_at (datetime): Timestamp of image upload.
+    """
+
+    __tablename__ = 'product_images'
+
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    image_url = db.Column(db.String(255), nullable=False)
+    is_main = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    product = db.relationship('Product', backref='images')
+
+    def __repr__(self):
+        return f"<ProductImage product_id={self.product_id} is_main={self.is_main}>"

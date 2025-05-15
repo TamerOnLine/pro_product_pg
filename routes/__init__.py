@@ -47,6 +47,7 @@ def register_error_handlers(app):
     # Handling internal server errors (500)
     @app.errorhandler(500)
     def internal_error(e):
+        app.logger.error("❌ 500 Internal Server Error", exc_info=True)
         return render_template("errors/500.html"), 500
 
     # Handling routing build errors (e.g., invalid URL building)
@@ -57,14 +58,17 @@ def register_error_handlers(app):
     # Handling unauthorized errors (401)
     @app.errorhandler(401)
     def unauthorized(e):
+        app.logger.warning("🚫 401 Unauthorized", exc_info=True)
         return render_template("errors/401.html"), 401
 
     # Handling forbidden errors (403)
     @app.errorhandler(403)
     def forbidden(e):
+        app.logger.warning("⛔ 403 Forbidden", exc_info=True)
         return render_template("errors/403.html"), 403
 
     # Handling not found errors (404)
     @app.errorhandler(404)
     def page_not_found(e):
+        app.logger.warning("🔍 404 Page Not Found", exc_info=True)
         return render_template("errors/404.html"), 404

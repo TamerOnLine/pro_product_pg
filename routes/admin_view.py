@@ -1,7 +1,7 @@
 import os
 from flask import (
     Blueprint, render_template, request, redirect,
-    url_for, current_app, session
+    url_for, current_app, session, flash
 )
 from werkzeug.utils import secure_filename
 import cloudinary.uploader
@@ -37,8 +37,22 @@ def admin_dashboard():
 @login_required
 def admin_products():
     """Display a list of all products."""
-    products = Product.query.all()
-    return render_template('admin/admin_products.html', products=products)
+    try:
+        products = Product.query.all()
+
+        for p in products:
+            print(f"{p.name} -> {len(p.images)} images")
+            for img in p.images:
+                print("   ", img.image_url)
+
+        return render_template('admin/admin_products.html', products=products)
+
+    except Exception as e:
+        import traceback
+        print("\n=== 🛑 Exception in /admin/products ===")
+        traceback.print_exc()
+        return f"<pre>{traceback.format_exc()}</pre>", 500
+
 
 
 @admin_bp.route('/add', methods=['GET', 'POST'])
@@ -48,7 +62,7 @@ def admin_add_product():
     if request.method == 'POST':
         data = request.form.to_dict()
 
-        from logic.validation_utils import validate_form, coerce_price
+        from logic.validation_utils import validate_form, coerce_price, sanitize_rich_text
 
         schema = {
             'name': {'type': 'string', 'minlength': 2, 'maxlength': 100, 'required': True},
@@ -56,7 +70,7 @@ def admin_add_product():
                 'type': 'float',
                 'min': 0,
                 'required': True,
-                'coerce': coerce_price  # ✅ تحويل السعر تلقائيًا
+                'coerce': coerce_price
             },
             'description': {'type': 'string', 'required': False},
             'specs': {'type': 'string', 'required': False}
@@ -64,7 +78,6 @@ def admin_add_product():
 
         is_valid, result = validate_form(data, schema, sanitize_fields=['name'])
 
-        from logic.validation_utils import sanitize_rich_text
         result['description'] = sanitize_rich_text(result.get('description'))
         result['specs'] = sanitize_rich_text(result.get('specs'))
 
@@ -75,43 +88,48 @@ def admin_add_product():
                 tinymce_api_key=os.getenv('TINYMCE_API_KEY')
             ), 400
 
-        file = request.files.get('image')
-        image_url = None
-
-        if file and file.filename != '':
-            try:
-                upload_result = cloudinary.uploader.upload(file)
-                public_id = upload_result['public_id']
-                image_url, _ = cloudinary_url(
-                    public_id,
-                    quality="auto",
-                    fetch_format="auto",
-                    crop="limit",
-                    width=800,
-                    height=800
-                )
-            except Exception as e:
-                current_app.logger.error(f"Error uploading image to Cloudinary: {e}")
-                return "Error uploading image. Please try again later.", 500
-
         try:
             sequence = Product.query.count() + 1
 
+            # إنشاء المنتج بدون صورة رئيسية في البداية
             product = Product(
                 name=result['name'],
                 price=result['price'],
                 description=result.get('description'),
-                image=image_url,
                 specs=result.get('specs'),
                 merchant_id=session.get("user_id")
             )
             product.generate_code(sequence)
-
             db.session.add(product)
+            db.session.flush()  # لحجز الـ product.id قبل رفع الصور
+
+            # ✅ رفع الصور المتعددة
+            files = request.files.getlist('images')
+            for index, file in enumerate(files):
+                if file and file.filename:
+                    upload_result = cloudinary.uploader.upload(file)
+                    public_id = upload_result['public_id']
+                    image_url, _ = cloudinary_url(
+                        public_id,
+                        quality="auto",
+                        fetch_format="auto",
+                        crop="limit",
+                        width=800,
+                        height=800
+                    )
+                    from models.models_definitions import ProductImage
+                    product_image = ProductImage(
+                        product_id=product.id,
+                        image_url=image_url,
+                        is_main=(index == 0)  # الصورة الأولى = الافتراضية
+                    )
+                    db.session.add(product_image)
+
             db.session.commit()
             return redirect(url_for('admin.admin_dashboard'))
 
         except Exception as e:
+            db.session.rollback()
             current_app.logger.exception("❌ Error adding product")
             return "An unexpected error occurred. Please try again later.", 500
 
@@ -122,11 +140,13 @@ def admin_add_product():
 
 
 
+
 @admin_bp.route('/edit/<int:product_id>', methods=['GET', 'POST'])
 @admin_only
 @login_required
 def edit_product(product_id):
-    from logic.validation_utils import validate_form, coerce_price
+    from logic.validation_utils import validate_form, coerce_price, sanitize_rich_text
+    from models.models_definitions import ProductImage
 
     product = Product.query.get_or_404(product_id)
 
@@ -147,7 +167,6 @@ def edit_product(product_id):
 
         is_valid, result = validate_form(data, schema, sanitize_fields=['name'])
 
-        from logic.validation_utils import sanitize_rich_text
         result['description'] = sanitize_rich_text(result.get('description'))
         result['specs'] = sanitize_rich_text(result.get('specs'))
 
@@ -159,29 +178,43 @@ def edit_product(product_id):
                 tinymce_api_key=os.getenv('TINYMCE_API_KEY')
             ), 400
 
+        # تحديث بيانات المنتج
         product.name = result['name']
         product.price = result['price']
         product.description = result.get('description')
         product.specs = result.get('specs')
         product.is_approved = False
 
-        image = request.files.get('image')
-        if image and image.filename != '':
-            try:
-                upload_result = cloudinary.uploader.upload(image)
-                public_id = upload_result['public_id']
-                image_url, _ = cloudinary_url(
-                    public_id,
-                    quality="auto",
-                    fetch_format="auto",
-                    crop="limit",
-                    width=800,
-                    height=800
-                )
-                product.image = image_url
-            except Exception as e:
-                current_app.logger.error(f"Error uploading image to Cloudinary: {e}")
-                return "Error uploading image. Please try again later.", 500
+        # ✅ تحديث الصورة الافتراضية
+        main_image_id = request.form.get('main_image_id')
+        if main_image_id:
+            for img in product.images:
+                img.is_main = (str(img.id) == main_image_id)
+
+        # ✅ رفع صور جديدة متعددة (images[])
+        new_images = request.files.getlist('images')
+        for file in new_images:
+            if file and file.filename:
+                try:
+                    upload_result = cloudinary.uploader.upload(file)
+                    public_id = upload_result['public_id']
+                    image_url, _ = cloudinary_url(
+                        public_id,
+                        quality="auto",
+                        fetch_format="auto",
+                        crop="limit",
+                        width=800,
+                        height=800
+                    )
+                    new_img = ProductImage(
+                        product_id=product.id,
+                        image_url=image_url,
+                        is_main=False  # يتم تعيين main لاحقًا يدويًا
+                    )
+                    db.session.add(new_img)
+                except Exception as e:
+                    current_app.logger.error(f"Cloudinary upload error: {e}")
+                    return "Error uploading image. Please try again later.", 500
 
         db.session.commit()
         return redirect(url_for('admin.admin_products'))
@@ -193,15 +226,18 @@ def edit_product(product_id):
     )
 
 
-
-@admin_bp.route('/delete/<int:product_id>', methods=['POST'])
+@admin_bp.route('/delete-image/<int:image_id>', methods=['POST'])
 @admin_only
 @login_required
-def delete_product(product_id):
-    product = Product.query.get_or_404(product_id)
-    db.session.delete(product)
+def delete_product_image(image_id):
+    from models.models_definitions import ProductImage
+    image = ProductImage.query.get_or_404(image_id)
+    db.session.delete(image)
     db.session.commit()
-    return redirect(url_for('admin.admin_products'))
+    flash("✅ Image deleted successfully.", "info")
+    return redirect(request.referrer or url_for('admin.admin_products'))
+
+
 
 
 @admin_bp.route('/system-links')
@@ -229,4 +265,15 @@ def approve_product(product_id):
         message=f"✅ Your product '{product.name}' has been approved."
     )
 
+    return redirect(url_for('admin.admin_products'))
+
+
+@admin_bp.route('/delete/<int:product_id>', methods=['POST'])
+@admin_only
+@login_required
+def delete_product(product_id):
+    product = Product.query.get_or_404(product_id)
+    db.session.delete(product)
+    db.session.commit()
+    flash("✅ Product deleted successfully.", "info")
     return redirect(url_for('admin.admin_products'))

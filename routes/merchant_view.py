@@ -1,7 +1,7 @@
 import os
 from flask import (
     Blueprint, render_template, request, redirect,
-    url_for, session, abort, current_app
+    url_for, session, abort, current_app, flash
 )
 from models.models_definitions import Product, db, User
 from routes.auth_utils import login_required
@@ -54,92 +54,77 @@ def dashboard():
 @login_required
 @merchant_required
 def add_product():
-    from logic.validation_utils import validate_form, coerce_price
+    from logic.validation_utils import validate_form, coerce_price, sanitize_rich_text
+    from models.models_definitions import ProductImage
 
     if request.method == 'POST':
         data = request.form.to_dict()
 
         schema = {
             'name': {'type': 'string', 'minlength': 2, 'maxlength': 100, 'required': True},
-            'price': {
-                'type': 'float',
-                'min': 0,
-                'required': True,
-                'coerce': coerce_price  # ✅ تحويل السعر تلقائيًا
-            },
+            'price': {'type': 'float', 'min': 0, 'required': True, 'coerce': coerce_price},
             'description': {'type': 'string', 'required': False},
             'specs': {'type': 'string', 'required': False}
         }
 
         is_valid, result = validate_form(data, schema, sanitize_fields=['name'])
 
-        from logic.validation_utils import sanitize_rich_text
         result['description'] = sanitize_rich_text(result.get('description'))
         result['specs'] = sanitize_rich_text(result.get('specs'))
 
         if not is_valid:
-            return render_template(
-                'merchant/add_product.html',
-                errors=result,
-                tinymce_api_key=os.getenv('TINYMCE_API_KEY')
-            ), 400
+            return render_template('merchant/add_product.html', errors=result), 400
 
-        file = request.files.get('image')
-        image_url = None
-
-        if file and file.filename:
-            try:
-                upload_result = cloudinary.uploader.upload(file)
-                public_id = upload_result['public_id']
-                image_url, _ = cloudinary_url(
-                    public_id,
-                    quality="auto",
-                    fetch_format="auto",
-                    crop="limit",
-                    width=800,
-                    height=800
-                )
-            except Exception as e:
-                current_app.logger.error(f"Cloudinary upload error: {e}")
-                return "Error uploading image. Please try again later.", 500
-
+        # إنشاء المنتج أولاً
         product = Product(
             name=result['name'],
             price=result['price'],
             description=result.get('description'),
             specs=result.get('specs'),
-            image=image_url,
             merchant_id=session['user_id'],
             is_approved=False
         )
-
         sequence = Product.query.filter_by(merchant_id=session['user_id']).count() + 1
         product.generate_code(sequence)
 
         try:
             db.session.add(product)
+            db.session.flush()  # للحصول على product.id قبل رفع الصور
+
+            # رفع الصور
+            files = request.files.getlist('images')
+            for index, file in enumerate(files):
+                if file and file.filename:
+                    upload_result = cloudinary.uploader.upload(file)
+                    image_url = upload_result.get('secure_url')
+                    img = ProductImage(
+                        product_id=product.id,
+                        image_url=image_url,
+                        is_main=(index == 0)
+                    )
+                    db.session.add(img)
+
             db.session.commit()
+
+            # إشعار المشرف
+            advance_notification(
+                product_id=product.id,
+                from_role=None,
+                from_type=None,
+                to_user_id=None,
+                to_role='admin',
+                to_type='product_edited',
+                message=f"📝 New product from merchant {session['username']} awaiting approval"
+            )
+
+            return redirect(url_for('merchant.dashboard'))
+
         except Exception as e:
-            current_app.logger.error(f"Error saving product to database: {e}")
-            return "An unexpected error occurred. Please try again later.", 500
+            db.session.rollback()
+            current_app.logger.error(f"❌ Error saving product: {e}")
+            return "Unexpected error", 500
 
-        # إشعار المشرف بمنتج جديد
-        advance_notification(
-            product_id=product.id,
-            from_role=None,
-            from_type=None,
-            to_user_id=None,
-            to_role='admin',
-            to_type='product_edited',
-            message=f"📝 New product from merchant {session['username']} awaiting approval"
-        )
-
-        return redirect(url_for('merchant.dashboard'))
-
-    return render_template(
-        'merchant/add_product.html',
-        tinymce_api_key=os.getenv('TINYMCE_API_KEY')
-    )
+    return render_template('merchant/add_product.html')
 
 
 
@@ -173,41 +158,30 @@ def edit_profile():
 @login_required
 @merchant_required
 def edit_product(product_id):
-    product = Product.query.get_or_404(product_id)
+    from logic.validation_utils import validate_form, coerce_price, sanitize_rich_text
+    from models.models_definitions import ProductImage
 
+    product = Product.query.get_or_404(product_id)
     if product.merchant_id != session['user_id']:
         abort(403)
 
     if request.method == 'POST':
-        from logic.validation_utils import validate_form, coerce_price
-
         data = request.form.to_dict()
 
         schema = {
             'name': {'type': 'string', 'minlength': 2, 'maxlength': 100, 'required': True},
-            'price': {
-                'type': 'float',
-                'min': 0,
-                'required': True,
-                'coerce': coerce_price
-            },
+            'price': {'type': 'float', 'min': 0, 'required': True, 'coerce': coerce_price},
             'description': {'type': 'string', 'required': False},
             'specs': {'type': 'string', 'required': False}
         }
 
         is_valid, result = validate_form(data, schema, sanitize_fields=['name'])
 
-        from logic.validation_utils import sanitize_rich_text
         result['description'] = sanitize_rich_text(result.get('description'))
         result['specs'] = sanitize_rich_text(result.get('specs'))
 
         if not is_valid:
-            return render_template(
-                'merchant/edit_product.html',
-                product=product,
-                errors=result,
-                tinymce_api_key=os.getenv('TINYMCE_API_KEY')
-            ), 400
+            return render_template('merchant/edit_product.html', product=product, errors=result), 400
 
         product.name = result['name']
         product.price = result['price']
@@ -215,24 +189,33 @@ def edit_product(product_id):
         product.specs = result.get('specs')
         product.is_approved = False
 
-        image = request.files.get('image')
-        if image and image.filename:
-            try:
-                upload_result = cloudinary.uploader.upload(image)
-                product.image = upload_result.get('secure_url')
-            except Exception as e:
-                current_app.logger.error(f"Error uploading image to Cloudinary: {e}")
-                return "Error uploading image. Please try again later.", 500
+        # تحديث الصورة الافتراضية
+        main_image_id = request.form.get('main_image_id')
+        if main_image_id:
+            for img in product.images:
+                img.is_main = (str(img.id) == main_image_id)
+
+        # رفع صور جديدة
+        new_images = request.files.getlist('images')
+        for file in new_images:
+            if file and file.filename:
+                try:
+                    upload_result = cloudinary.uploader.upload(file)
+                    image_url = upload_result.get('secure_url')
+                    img = ProductImage(
+                        product_id=product.id,
+                        image_url=image_url,
+                        is_main=False
+                    )
+                    db.session.add(img)
+                except Exception as e:
+                    current_app.logger.error(f"Error uploading image: {e}")
+                    return "Error uploading image", 500
 
         db.session.commit()
         return redirect(url_for('merchant.my_products'))
 
-    return render_template(
-        'merchant/edit_product.html',
-        product=product,
-        tinymce_api_key=os.getenv('TINYMCE_API_KEY')
-    )
-
+    return render_template('merchant/edit_product.html', product=product)
 
 
 @merchant_bp.route('/products')
@@ -242,3 +225,39 @@ def my_products():
     """Display a list of products owned by the merchant."""
     products = Product.query.filter_by(merchant_id=session['user_id']).all()
     return render_template('merchant/my_products.html', products=products)
+
+
+@merchant_bp.route('/products/<int:product_id>/edit-image', methods=['GET'])
+@login_required
+@merchant_required
+def edit_product_image(product_id):
+    product = Product.query.get_or_404(product_id)
+    if product.merchant_id != session['user_id']:
+        abort(403)
+    return render_template('shared/edit_image.html', product=product)
+
+
+@merchant_bp.route('/products/<int:product_id>/save-image', methods=['POST'])
+@login_required
+@merchant_required
+def save_product_image(product_id):
+    product = Product.query.get_or_404(product_id)
+    if product.merchant_id != session['user_id']:
+        abort(403)
+
+    image_data = request.form.get('image_data')
+    if not image_data:
+        flash("❌ لم يتم استلام الصورة الجديدة", "error")
+        return redirect(url_for('merchant.edit_product_image', product_id=product_id))
+
+    # رفع الصورة إلى Cloudinary
+    try:
+        upload_result = cloudinary.uploader.upload(image_data)
+        product.image = upload_result['secure_url']
+        db.session.commit()
+        flash("✅ تم تحديث صورة المنتج بنجاح", "success")
+    except Exception as e:
+        current_app.logger.error(f"Error uploading new product image: {e}")
+        flash("❌ حدث خطأ أثناء رفع الصورة الجديدة", "error")
+
+    return redirect(url_for('merchant.edit_product', product_id=product.id))

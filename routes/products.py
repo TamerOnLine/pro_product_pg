@@ -93,3 +93,4 @@ def add_product():
         flash("❌ An unexpected error occurred. Please try again later.", "error")
         return redirect(url_for('products.index'))
 
+

@@ -27,17 +27,6 @@
   <textarea name="specs" id="specs" class="form-control">{{ product.specs if product else '' }}</textarea>
 </div>
 
-<div class="mb-3">
-  <label class="form-label" for="image">🖼️ {{ _("Product Image") }}</label>
-  <input type="file" name="image" id="image" class="form-control" accept="image/*">
-  {% if product and product.image %}
-    <div class="mt-2">
-      <img src="{{ product.image }}" alt="Current product image"
-           class="img-fluid" style="max-height: 150px;">
-    </div>
-  {% endif %}
-</div>
-
 <div class="text-center mt-3">
   <button type="submit" class="btn btn-primary">
     {{ _("➕ Save Product") }}
@@ -48,31 +37,9 @@
 <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 <script>
   ClassicEditor
-    .create(document.querySelector('#description'), {
-      language: 'ar',
-      toolbar: [
-        'heading', '|',
-        'bold', 'italic', 'underline', 'strikethrough', '|',
-        'fontSize', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
-        'alignment', 'bulletedList', 'numberedList', '|',
-        'link', 'imageUpload', 'mediaEmbed', 'insertTable', 'horizontalLine', '|',
-        'undo', 'redo', 'codeBlock'
-      ]
-    })
+    .create(document.querySelector('#description'), { language: 'ar' })
     .catch(error => console.error(error));
-
   ClassicEditor
-    .create(document.querySelector('#specs'), {
-      language: 'ar',
-      toolbar: [
-        'heading', '|',
-        'bold', 'italic', 'underline', 'strikethrough', '|',
-        'fontSize', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
-        'alignment', 'bulletedList', 'numberedList', '|',
-        'link', 'imageUpload', 'mediaEmbed', 'insertTable', 'horizontalLine', '|',
-        'undo', 'redo', 'codeBlock'
-      ]
-    })
+    .create(document.querySelector('#specs'), { language: 'ar' })
     .catch(error => console.error(error));
 </script>
-

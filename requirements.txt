@@ -10,3 +10,4 @@ cerberus
 bleach
 flask-babel
 deep-translator
+Filerobot 
